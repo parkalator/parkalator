@@ -117,7 +117,7 @@ db.open(function(err, db) {
 
 	});
 });
-var c = 0;
+
 function sendData(message,newData){
 	var obj = {};
 	if (newData) {
@@ -130,7 +130,7 @@ function sendData(message,newData){
 	if (currentStats){
 		obj.dataDate = currentStats.date;
 		obj.priceAverage = currentStats.priceaverage;
-		obj.pricePaidAverage = currentStats.pricepaidaverage + (c++);
+		obj.pricePaidAverage = currentStats.pricepaidaverage;
 		obj.maxRate = currentStats.maxRate;
 		obj.freeMeters = currentStats.freeMeters;
 		obj.paidMeters = currentStats.paidMeters; 
