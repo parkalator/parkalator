@@ -111,11 +111,8 @@ $(function(){
     
     smoothie.streamTo(document.getElementById('chart'), 1000);
     
-    var socket = new io.Socket(); 
-    socket.connect();
-    socket.on('connect', function(){ 
-	
-    });
+    var socket = io.connect("http://parkalator.com");
+
     
     counts = {
 	'free': 0,
@@ -123,7 +120,7 @@ $(function(){
 	'maxRate': 0,
     };
     
-    socket.on('message', function(obj){
+    socket.on('newData', function(obj){
         var now = new Date().getTime();
 	if ("freeMeters" in obj) {
 	    if (parseInt(obj['freeMeters']) > counts['free']) {
@@ -168,11 +165,6 @@ $(function(){
 	    dataSetMaxRate.append(now, updateStat(obj['maxRate'], "chart-paidMaxRate"));
 	}
     });
-    
-    socket.on('disconnect', function(){
-	
-    });
-    
 
     $("#hide-legend").click(function() {
 	if($(this).html() == '(hide)') {

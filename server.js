@@ -8,13 +8,12 @@ var express = require('express');
 var app = require('express').createServer();
 var io = require('socket.io');
 var sys = require('sys');
-
+var socket;
 var Db = require('mongodb').Db,
   Connection = require('mongodb').Connection,
   Server = require('mongodb').Server,
   // BSON = require('../lib/mongodb').BSONPure;
   BSON = require('mongodb').BSONNative;
-
 
 var dbhost = process.env['MONGO_NODE_DRIVER_HOST'] != null ? process.env['MONGO_NODE_DRIVER_HOST'] : 'localhost';
 var dbport = process.env['MONGO_NODE_DRIVER_PORT'] != null ? process.env['MONGO_NODE_DRIVER_PORT'] : Connection.DEFAULT_PORT;
@@ -31,18 +30,6 @@ app.get('/', function(req, res){
 
 app.use(express.static(__dirname + '/'));
 
-var socket = io.listen(app); 
-
-socket.sockets.on('connection', function(client){ 
-	sendData("");
-	client.on('message', function(msg){ 
-		//sendData(); 
-		console.log(msg);
-	});
-  	client.on('disconnect', function(){
-	
-	});
-});
 
 app.get('/api/parking_meters', function(req, res){
 	var lat = req.query.lat,
@@ -57,13 +44,26 @@ app.get('/api/parking_meters', function(req, res){
 	});
 });
 
+var priceHistoryData = [];
+var currentStats;
+
+app.get('/api/current_stats', function(req, res){
+	res.send(currentStats);
+});
+
+app.get('/api/history_stats', function(req, res){
+	var d;
+	if (priceHistoryData.length > 10){
+		d = priceHistoryData.slice(priceHistoryData.length-10);
+	}
+	else
+	{
+		d = priceHistoryData;
+	}
+	res.send(d);
+});
 
 
-var priceaverage = 0.0;
-var pricepaidaverage = 0.0;
-var maxRate = 0.0;
-var paidMeters = 0;
-var freeMeters = 0;
 
 var parkcollection;
 db.open(function(err, db) {
@@ -85,7 +85,7 @@ db.open(function(err, db) {
 						var rateZeroCount = 0;
 						var rateTotal = 0.0;
 						var rateZeroTotal = 0.0;
-						maxRate = 0.0;
+						var maxRate = 0.0;
 						for (var i=0;i<data.length;i++){
 							var rate = parseFloat(data[i].RATE);
 							if (rate > 0)
@@ -101,11 +101,15 @@ db.open(function(err, db) {
 						//console.log(rateCount);
 						//console.log(rateZeroCount);
 						//console.log(maxRate);
-						
-						freeMeters = rateZeroCount-rateCount;
-						paidMeters = rateCount;
-						priceaverage = rateZeroTotal/rateZeroCount;
-						pricepaidaverage = rateTotal/rateCount;
+						var statData = {};
+						statData.date = (new Date()).toLocaleString();
+						statData.maxRate = maxRate;
+						statData.freeMeters = rateZeroCount-rateCount;
+						statData.paidMeters = rateCount;
+						statData.priceaverage = rateZeroTotal/rateZeroCount;
+						statData.pricepaidaverage = rateTotal/rateCount;
+						currentStats = statData;
+						priceHistoryData.push(statData);
 						sendData("new data", true);
 				});
 			});
@@ -113,10 +117,6 @@ db.open(function(err, db) {
 
 	});
 });
-
-
-
-
 
 function sendData(message,newData){
 	var obj = {};
@@ -127,14 +127,32 @@ function sendData(message,newData){
 	{
 		obj.msg = message;
 	}
-	obj.priceAverage = priceaverage;
-	obj.pricePaidAverage = pricepaidaverage;
-	obj.maxRate = maxRate;
-	obj.freeMeters = freeMeters;
-	obj.paidMeters = paidMeters;
+	if (currentStats){
+		obj.dataDate = currentStats.date;
+		obj.priceAverage = currentStats.priceaverage;
+		obj.pricePaidAverage = currentStats.pricepaidaverage;
+		obj.maxRate = currentStats.maxRate;
+		obj.freeMeters = currentStats.freeMeters;
+		obj.paidMeters = currentStats.paidMeters; 
+	}
 	console.log("message");
 	console.log(obj)
-	socket.sockets.json.send(obj);
+	socket.sockets.emit("newData",obj);
 }
 
 app.listen(8000);
+
+socket = io.listen(app); 
+
+socket.sockets.on('connection', function(client){ 
+	sendData("");
+	client.on('message', function(msg){ 
+		//sendData(); 
+		console.log(msg);
+	});
+  	client.on('disconnect', function(){
+		
+	});
+});
+
+
