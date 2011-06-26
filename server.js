@@ -142,7 +142,29 @@ function sendData(message,newData){
 
 app.listen(8000);
 
-socket = io.listen(3000); 
+socket = io.listen(app); 
+socket.configure('production', function(){
+  socket.enable('browser client etag');
+  socket.set('log level', 1);
+
+  socket.set('transports', [
+   'flashsocket'
+  , 'htmlfile'
+  , 'xhr-polling'
+  , 'jsonp-polling'
+  ]);
+});
+
+socket.configure('development', function(){
+  socket.enable('browser client etag');
+  socket.set('log level', 1);
+  socket.set('transports', [
+   'flashsocket'
+  , 'htmlfile'
+  , 'xhr-polling'
+  , 'jsonp-polling'
+  ]);
+});
 
 socket.sockets.on('connection', function(client){ 
 	sendData("");
