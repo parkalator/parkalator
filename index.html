@@ -25,22 +25,78 @@
       <div id="map"></div>
     </div>
     <div id="bottom">
-      <div id="controls">
-	<div class="padded-cell white-bg">
-	  
+      <div class="m10h">
+	<div class="col">
+	  <div class="m20 m25l">
+	    <h2>meter info</h2>
+
+	    <p class="field">Open meters:</p>
+	    <p class="data m10b" id="info-open">15 of 34</p>
+	    <p class="field">Price per hour:</p>
+	    <p class="data m10b" id="info-price">$2.00</p>
+	    <p class="field">Hours of operation:</p>
+	    <p class="data m10b" id="info-hours">9am-6pm</p>
+	    
+	  </div>
+	</div>
+	<div class="col">
+	  <div class="m20">
+	    <h2>activity</h2>
+	    <ul class="activity">
+	      <li><span class="field">2nd and Folsom St.</span> <span class="data">5 available spots.</span></li>
+	      <li><span class="field">New Montgomery and Howard St.</span> <span class="data">price increased to $2.50/hr.</span></li>
+	      <li><span class="field">840 Brannan St.</span> <span class="data">no more available spots.</span></li>
+	      <li><span class="field">200 4th St.</span> <span class="data">price decreased to $2.00/hr.</span></li>
+	      <li><span class="field">2nd and Folsom St.</span> <span class="data">5 available spots.</span></li>
+	      <li><span class="field">New Montgomery and Howard St.</span> <span class="data">price increased to $2.50/hr.</span></li>
+	      <li><span class="field">840 Brannan St.</span> <span class="data">no more available spots.</span></li>
+	      <li><span class="field">200 4th St.</span> <span class="data">price decreased to $2.00/hr.</span></li>
+	    </ul>
+	  </div>
+	</div>
+	<div class="col" style="width:34%">
+	  <div class="m20">
+	    <h2>city price delta</h2>
+	    <canvas id="chart" height="80"></canvas> 
+	    <span class="field">Average:</span> <span class="m20r data" id="chart-mean">$0.00</span>
+	    <span class="field">Median:</span> <span class="m20r data" id="chart-med">$0.00</span>
+	  </div>
 	</div>
       </div>
     </div>
-    <div id="footer"></div>
-    <div id="footer-left"> </div>
-    <div id="footer-right"> </div>
+    <div id="footer">
+      <div>
+	<div id="footer-authors">
+	  Team Parkalator: 
+	  <a class="m10l" target="_blank" href="http://twitter.com/zbowling">Zac Bowling</a>,
+	  <a class="m10l" target="_blank" href="http://twitter.com/jed3">Trey Doig</a>,
+	  <a class="m10l" target="_blank" href="http://twitter.com/stevesalevan">Steve Salevan</a>,
+	  <a class="m10l" target="_blank" href="http://twitter.com/jssqrd">Julie Silverman</a>,
+	  <a class="m10l" target="_blank" href="http://twitter.com/slowpoison">Vishal Verma</a>
+	</div>
+	<div id="footer-logo">
+	  dataInsight 2011 <img src="/img/logo-16x16.png" />
+	</div>
+	<br class="cf" />
+      </div>
+    </div>
   </div> 
+  <div id="title"><img src="/favicon.ico" /><a href="#">PARKALATOR</a></div>
+  <div id="legend">
+    <h3 class="fl">legend</h3> <p class="m7"><a href="#" class="m10l data" id="hide-legend">(hide)</a></p>
+    <div class="cf">
+      <div class="spot-avail"></div> <span class="data">available</span>
+      <br class="cf" />
+      <div class="spot-unavail"></div> <span class="data">unavailable</span>
+    </div>
+  </div>
   
   <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
   <script>!window.jQuery && document.write(unescape('%3Cscript src="js/libs/jquery-1.5.1.min.js"%3E%3C/script%3E'))</script>
   <script src="js/libs/modernizr-1.7.min.js"></script>
-  <script src="/socket.io/socket.io.js"></script>
   <script src="js/libs/OpenLayers.js"></script>
+  <script src="js/libs/smoothie.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
   <script src="js/plugins.js"></script>
   <script src="js/script.js"></script>
   
