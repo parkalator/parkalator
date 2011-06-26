@@ -156,13 +156,13 @@ $(function(){
 	    }	
 	}
 	if ("priceAverage" in obj) {
-	    dataSetMean.append(now, updateStat(obj['priceAverage'], "chart-mean"));
+	    dataSetMean.append(now, updateStat(obj['priceAverage'], "#chart-mean"));
 	}
 	if ("pricePaidAverage" in obj) {
-	    dataSetPaidMean.append(now, updateStat(obj['pricePaidAverage'], "chart-paidMean"));
+	    dataSetPaidMean.append(now, updateStat(obj['pricePaidAverage'], "#chart-paidMean"));
 	}
 	if ("maxRate" in obj) {
-	    dataSetMaxRate.append(now, updateStat(obj['maxRate'], "chart-paidMaxRate"));
+	    dataSetMaxRate.append(now, updateStat(obj['maxRate'], "#chart-paidMaxRate"));
 	}
     });
 
