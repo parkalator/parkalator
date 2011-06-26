@@ -29,8 +29,6 @@ var socket = io.listen(app);
 app.use(express.bodyParser());
 app.use(app.router);
 
-
-
 app.get('/', function(req, res){
 	res.sendfile("index.html");
 	//res.send('Phone calls ' + callcount);
@@ -48,7 +46,6 @@ db.open(function(err, db) {
 				collection.insert(data);
 			});
 		},3000);
-
 	});
 });
 
