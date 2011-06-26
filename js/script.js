@@ -88,9 +88,7 @@ $(function(){
     var dataSetMean = new TimeSeries(), dataSetPaidMean = new TimeSeries(), dataSetMaxRate = new TimeSeries();
     
     function updateStat(num, field) {
-	var m = ((parseFloat(num) * 1000) / 100) + "";
-	if(m.length < 4) 
-	    m = m + '0';
+	var m = parseFloat(num);
 	$(field).html("$" + m);
 	return m;
     }
