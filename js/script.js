@@ -16,17 +16,20 @@ $(function(){
     map = new OpenLayers.Map('map', mapOptions );
     var osm = new OpenLayers.Layer.WMS(
    	"openstreetmap","http://maps.opengeo.org/geowebcache/service/wms",
-			{layers: 'openstreetmap', format: 'image/png'} 
+			{layers: 'openstreetmap', format: 'image/png', isBaseLayer: true, rendererOptions: {yOrdering: true}} 
     );
     
     var regions = new OpenLayers.Layer.Vector("Regions", {
         strategies: [new OpenLayers.Strategy.BBOX()],
+        projection:  new OpenLayers.Projection("EPSG:2227"),
         protocol: new OpenLayers.Protocol.WFS({
             version: "1.1.0",
             url: "http://parkalator.com/geoserver/wfs",
             featureType: "planning_neighborhoods",
             featureNS: "http://parkalator.com/parkws",
-            srsName: "EPSG:2227"
+            srsName: "EPSG:2227",
+            schema: "http://parkalator.com:8080/geoserver/wfs/DescribeFeatureType?version=1.1.0&typename=parkalator:planning_neighborhoods",
+            featurePrefix: "parkalator"
         })
     });
 

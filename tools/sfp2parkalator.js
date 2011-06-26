@@ -4,7 +4,7 @@ var fs = require('fs');
 
 function sfp2parkalator(contents, time) {
 
-    var o = JSON.parse(contents);
+    var o = contents;
     if (o == null)
         throw "Couldn't parse file";
     var l = 0;
@@ -40,8 +40,8 @@ function sfp2parkalator(contents, time) {
                 rates.OPER = avls[i].OPER;
                 rates.LOC = avls[i].LOC;
                 latlong = loc2LatLong(rates.LOC);
-                rates.LOCBEG = { lat: latlong[1], lng: latlong[0] };
-                rates.LOCEND = { lat: latlong[3], lng: latlong[2] };
+                rates.LOCBEG = { lat: parseFloat(latlong[1]), lng: parseFloat(latlong[0]) };
+                rates.LOCEND = { lat: parseFloat(latlong[3]), lng: parseFloat(latlong[2]) };
 
                 myrates[l++] = rates;
 
@@ -62,8 +62,8 @@ function sfp2parkalator(contents, time) {
                     rates[j].LOC = avls[i].LOC;
 
                     latlong = loc2LatLong(rates[j].LOC);
-                    rates[j].LOCBEG = { lat: latlong[1], lng: latlong[0] };
-                    rates[j].LOCEND = { lat: latlong[3], lng: latlong[2] };
+                    rates[j].LOCBEG = { lat: parseFloat(latlong[1]), lng: parseFloat(latlong[0]) };
+                    rates[j].LOCEND = { lat: parseFloat(latlong[3]), lng: parseFloat(latlong[2]) };
                     //console.log("Lat " + latlong[0] + ", Lng" + latlong[1] + " - lat " + latlong[0] + ", lng " + latlong[1]);
                     myrates[l++] = rates[j];
                 }
@@ -101,7 +101,7 @@ var doMunge  = function(err, contents) {
         d = new Date();
     }
 
-    console.log(sfp2parkalator(contents, d.toLocaleString()));
+    console.log(sfp2parkalator( JSON.parse(contents), d.toLocaleString()));
 }
 
 function timestrToMin(timestr, end)
@@ -129,6 +129,12 @@ function timestrToMin(timestr, end)
 */
 }
 
-var fileName = process.argv[2];
-fs.readFile(fileName, doMunge);
+if (require.main === module)
+{
+	var fileName = process.argv[2];
+	fs.readFile(fileName, doMunge);
+}
 //sys.puts(process.argv[1]);
+
+
+exports.sfp2parkalator = sfp2parkalator;
