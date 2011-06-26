@@ -26,11 +26,18 @@
     </div>
     <div id="bottom">
       <div class="m10h">
+	
 	<div class="col" style="width:25%">
 	  <div class="m20 m25l">
-	    <h2>activity</h2>
-	    <ul class="activity" id="meter-activity">
-	    </ul>
+	    <h2>meter info</h2>
+
+	    <p class="field">Open meters:</p>
+	    <p class="data m10b" id="info-open">15 of 34</p>
+	    <p class="field">Maximum price today:</p>
+	    <p class="data m10b" id="info-price">$2.50</p>
+	    <p class="field">Hours of operation:</p>
+	    <p class="data m10b" id="info-hours">9am-6pm</p>
+	    
 	  </div>
 	</div>
 	<div class="col" style="width:50%">
@@ -45,18 +52,13 @@
 	</div>
       </div>
       <div class="col" style="width:25%">
-	  <div class="m20">
-	    <h2>meter info</h2>
-
-	    <p class="field">Open meters:</p>
-	    <p class="data m10b" id="info-open">15 of 34</p>
-	    <p class="field">Maximum price today:</p>
-	    <p class="data m10b" id="info-price">$2.50</p>
-	    <p class="field">Hours of operation:</p>
-	    <p class="data m10b" id="info-hours">9am-6pm</p>
-	    
-	  </div>
+	<div class="m20">
+	  <h2>activity</h2>
+	  <ul class="activity" id="meter-activity">
+	  </ul>
 	</div>
+      </div>
+
     </div>
     <div id="footer">
       <div>
@@ -75,7 +77,7 @@
       </div>
     </div>
   </div> 
-  <div id="title"><img src="/favicon.ico" /><a href="#">PARKALATOR</a></div>
+  <div id="title"><img src="/favicon.ico" /><a href="#">PARK<span style="color:#aab2a4">ALATOR</span></a></div>
   <div id="legend">
     <h3 class="fl">legend</h3> <p class="m7"><a href="#" class="m10l data" id="hide-legend">(hide)</a></p>
     <div class="cf">
