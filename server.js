@@ -35,9 +35,9 @@ app.use(express.static(__dirname + '/'));
 var socket = io.listen(app); 
 
 socket.sockets.on('connection', function(client){ 
-	sendData();
+	sendData("");
 	client.on('message', function(msg){ 
-		sendData(); 
+		//sendData(); 
 		console.log(msg);
 	});
   	client.on('disconnect', function(){
@@ -107,15 +107,18 @@ db.open(function(err, db) {
 						paidMeters = rateCount;
 						priceaverage = rateZeroTotal/rateZeroCount;
 						pricepaidaverage = rateTotal/rateCount;
-						sendData("new data");
+						sendData("new data", true);
 				});
 			});
 		},5000);
 	});
 });
 
-function sendData(message){
+function sendData(message,newData){
 	var obj = {};
+	if (newData) {
+		obj.newData = newData;
+	}
 	if (message)
 	{
 		obj.msg = message;
@@ -127,10 +130,7 @@ function sendData(message){
 	obj.paidMeters = paidMeters;
 	console.log("message");
 	console.log(obj)
-	socket.sockets.send(obj);
+	socket.sockets.json.send(obj);
 }
 
 app.listen(8000);
-
-
-
