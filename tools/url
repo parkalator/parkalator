@@ -1,0 +1,6 @@
+#!/bin/bash
+
+echo 'http://api.sfpark.org/sfpark/rest/availabilityservice?lat=37.792275&long=-122.397089&radius=7&uom=mile&pricing=yes&response=json'
+#echo 'http://api.sfpark.org/sfpark/rest/availabilityservice?lat=37.792275&long=-122.397089&radius=0.25&uom=mile&response=json'
+#echo 'http://api.sfpark.org/sfpark/rest/availabilityservice?lat=37.792275&long=-122.397089&radius=0.25&uom=mile&response=json'
+
