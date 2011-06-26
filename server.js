@@ -34,9 +34,9 @@ app.use(express.static(__dirname + '/'));
 var socket = io.listen(app); 
 
 socket.sockets.on('connection', function(client){ 
-	sendData();
+	sendData("");
 	client.on('message', function(msg){ 
-		sendData(); 
+		//sendData(); 
 		console.log(msg);
 	});
   	client.on('disconnect', function(){
@@ -106,7 +106,7 @@ db.open(function(err, db) {
 						paidMeters = rateCount;
 						priceaverage = rateZeroTotal/rateZeroCount;
 						pricepaidaverage = rateTotal/rateCount;
-						sendData("new data");
+						sendData("new data", true);
 				});
 			});
 		},3000);
@@ -115,22 +115,14 @@ db.open(function(err, db) {
 });
 
 
-app.get('/api/parking_meters', function(req, res){
-	var lat = req.query.lat,
-		lng = req.query.lng,
-		radius = req.query.radius;
-	
-	var ret = {};
-	
-	parkcollection.find({ "LOCBEG":{"$within" : {"$center" : [{lat:parseFloat(lat),lng:parseFloat(lng)}, parseFloat(radius)]}}}).toArray(function(err, docs) {
-	    ret.meters=docs; 
-		res.send(ret);
-		},5000);
-	});
-});
 
-function sendData(message){
+
+
+function sendData(message,newData){
 	var obj = {};
+	if (newData) {
+		obj.newData = newData;
+	}
 	if (message)
 	{
 		obj.msg = message;
@@ -142,10 +134,7 @@ function sendData(message){
 	obj.paidMeters = paidMeters;
 	console.log("message");
 	console.log(obj)
-	socket.sockets.send(obj);
+	socket.sockets.json.send(obj);
 }
 
 app.listen(8000);
-
-
-
