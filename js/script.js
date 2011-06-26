@@ -48,15 +48,14 @@ $(function(){
         protocol: new OpenLayers.Protocol.WFS({
             version: "1.1.0",
             url: "http://parkalator.com/geoserver/wfs",
-            featureType: "planning_neighborhoods",
+            featureType: "SFMTA_meters_0210",
             featureNS: "http://parkalator.com/parkws",
             srsName: "EPSG:900913"
         })
     });
     
-
     map.addLayers([osm, meters]);
-
+    
     osm.events.on({
         moveend: function(e) {
 	    // fetch data for this region
@@ -64,7 +63,7 @@ $(function(){
             if (e.zoomChanged) {
 		if(map.zoom == 15) {
 		    // time to show the meters
-		    //map.addLayers([meters]);
+		    //
 		    console.log('add meters');
 		}
 		else { 
