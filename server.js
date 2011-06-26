@@ -1,5 +1,6 @@
 var opts = {};
 var io = require('socket.io'); 
+var sfp = require("./tools/sfp2parkalator")
 opts.port = 20200;
 
 var rest = require('restler');
@@ -14,13 +15,10 @@ var Db = require('mongodb').Db,
   BSON = require('mongodb').BSONNative;
 
 
-var host = process.env['MONGO_NODE_DRIVER_HOST'] != null ? process.env['MONGO_NODE_DRIVER_HOST'] : 'localhost';
-var port = process.env['MONGO_NODE_DRIVER_PORT'] != null ? process.env['MONGO_NODE_DRIVER_PORT'] : Connection.DEFAULT_PORT;
+var dbhost = process.env['MONGO_NODE_DRIVER_HOST'] != null ? process.env['MONGO_NODE_DRIVER_HOST'] : 'localhost';
+var dbport = process.env['MONGO_NODE_DRIVER_PORT'] != null ? process.env['MONGO_NODE_DRIVER_PORT'] : Connection.DEFAULT_PORT;
 
-var db = new Db('parkalator', new Server(host, port, {}), {native_parser:true});
-
-
-var callcount = 0;
+var db = new Db('parkalator', new Server(dbhost, dbport, {}), {native_parser:true});
 
 var socket = io.listen(app); 
 
@@ -31,6 +29,7 @@ app.use(app.router);
 
 
 
+
 app.get('/', function(req, res){
 	res.sendfile("index.html");
 	//res.send('Phone calls ' + callcount);
@@ -38,19 +37,58 @@ app.get('/', function(req, res){
 
 app.use(express.static(__dirname + '/'));
 
-db.open(function(err, db) {
-	db.collection('sfpark', function(err, collection) {
-		setTimeout(function() {
-			var path = "http://api.sfpark.org/sfpark/rest/availabilityservice?lat=37.792275&long=-122.397089&radius=10&uom=mile&pricing=yes&response=json";
-			console.log("downloading data");
-			rest.get(path).on('complete', function(data,response) { 
-				console.log("inserting data");
-				collection.insert(data);
-			});
-		},3000);
 
+socket.on('connection', function(client){ 
+	sendData();
+	client.on('message', function(msg){ sendData(); 
+			console.log(msg);
+	});
+  	client.on('disconnect', function(){
+	
 	});
 });
+
+
+
+var parkcollection;
+db.open(function(err, db) {
+	db.collection('sfpark', function(err, collection) {
+		parkcollection = collection;
+		
+		parkcollection.ensureIndex({"LOCBEG" : "2d"},null,function(){});
+		parkcollection.ensureIndex({"LOCEND" : "2d"},null,function(){});
+		setTimeout(function() {
+			var path = "http://api.sfpark.org/sfpark/rest/availabilityservice?lat=37.792275&long=-122.397089&radius=100&uom=mile&pricing=yes&response=json";
+			console.log("downloading data");
+			rest.get(path).on('complete', function(data,response) { 
+					collection.remove({}, function(err, result) {
+						console.log("inserting data");
+						console.log(data);
+						data = sfp.sfp2parkalator(data,(new Date()).toLocaleString());
+						collection.insert(data);
+						for (var item in data){
+							
+						}
+				});
+			});
+		},3000);
+	});
+});
+
+
+app.get('/api/parking_meters', function(req, res){
+	var lat = req.query.lat,
+		lng = req.query.lng,
+		radius = req.query.radius;
+	
+	var ret = {};
+	
+	parkcollection.find({ "LOCBEG":{"$within" : {"$center" : [{lat:parseFloat(lat),lng:parseFloat(lng)}, parseFloat(radius)]}}}).toArray(function(err, docs) {
+	    ret.meters=docs; 
+		res.send(ret);
+	});
+});
+
 
 
 
