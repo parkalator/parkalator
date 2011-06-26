@@ -85,24 +85,16 @@ $(function(){
     
     /* smoothie ingredients */
     
-    var dataSetMean = new TimeSeries(), dataSetPaidMean = new TimeSeries();
+    var dataSetMean = new TimeSeries(), dataSetPaidMean = new TimeSeries(), dataSetMaxRate = new TimeSeries();
     
-    function mean(num) {
+    function updateStat(num, field) {
 	var m = ((parseFloat(num) * 1000) / 100) + "";
 	if(m.length < 4) 
 	    m = m + '0';
-	$("#chart-mean").html("$" + m);
+	$(field).html("$" + m);
 	return m;
     }
-
-    function paidMean(num) {
-	var m = ((parseFloat(num) * 1000) / 100) + "";
-	if(m.length < 4)
-	    m = m + '0';
-	$("#chart-paidMean").html("$" + m);
-	return m;
-    }
-
+    
     // Build the timeline
     var smoothie = new SmoothieChart({ 
 	millisPerPixel: 20, 
@@ -117,6 +109,7 @@ $(function(){
     
     smoothie.addTimeSeries(dataSetMean, { strokeStyle: 'rgba(255, 0, 0, 1)', fillStyle: 'rgba(255, 0, 0, 0.2)', lineWidth: 1 });
     smoothie.addTimeSeries(dataSetPaidMean, { strokeStyle: 'rgba(0, 255, 0, 1)', fillStyle: 'rgba(0, 255, 0, 0.2)', lineWidth: 1 });
+    smoothie.addTimeSeries(dataSetMaxRate, { strokeStyle: 'rgba(0, 0, 255, 1)', fillStyle: 'rgba(0, 0, 255, 0.2)', lineWidth: 1 });
     
     smoothie.streamTo(document.getElementById('chart'), 1000);
     
@@ -129,6 +122,7 @@ $(function(){
     counts = {
 	'free': 0,
 	'paid': 0,
+	'maxRate': 0,
     };
     
     socket.on('message', function(obj){
@@ -155,11 +149,25 @@ $(function(){
 		    ));
 	    }	
 	}
+	if ("maxRate" in obj) {
+	    if (parseInt(obj['maxRate']) > counts['maxRate']) {
+		counts['maxRate'] = parseFloat(obj['maxRate']);
+		$("#meter-activity").prepend(
+		    $("<li />").append(
+			$("<span />").html(counts['maxRate']).addClass("field")
+		    ).append(
+			$("<span />").html(" is the most expensive rate in the city.").addClass("data")
+		    ));
+	    }	
+	}
 	if ("priceAverage" in obj) {
-	    dataSetMean.append(now, mean(obj['priceAverage']));
+	    dataSetMean.append(now, updateStat(obj['priceAverage'], "chart-mean"));
 	}
 	if ("pricePaidAverage" in obj) {
-	    dataSetPaidMean.append(now, paidMean(obj['pricePaidAverage']));
+	    dataSetPaidMean.append(now, updateStat(obj['pricePaidAverage'], "chart-paidMean"));
+	}
+	if ("maxRate" in obj) {
+	    dataSetMaxRate.append(now, updateStat(obj['maxRate'], "chart-paidMaxRate"));
 	}
     });
     
@@ -178,9 +186,9 @@ $(function(){
 	}
     });
     
-    $("#chart").attr('width', ($("#bottom").width() / 3)-60);
+    $("#chart").attr('width', ($("#bottom").width() / 2)-60);
     $(window).resize(function() {
-	$("#chart").attr('width', ($("#bottom").width() / 3)-60);
+	$("#chart").attr('width', ($("#bottom").width() / 2)-60);
     });
     
 });
