@@ -43,18 +43,9 @@ $(function(){
         })
     });
     
-    meters = new OpenLayers.Layer.Vector("Parking Meters", {
-        strategies: [new OpenLayers.Strategy.BBOX()],
-        protocol: new OpenLayers.Protocol.WFS({
-            version: "1.1.0",
-            url: "http://parkalator.com/geoserver/wfs",
-            featureType: "SFMTA_meters_0210",
-            featureNS: "http://parkalator.com/parkws",
-            srsName: "EPSG:900913"
-        })
-    });
     
-    map.addLayers([osm, meters]);
+    
+    map.addLayers([osm]);
     
     osm.events.on({
         moveend: function(e) {
@@ -63,7 +54,17 @@ $(function(){
             if (e.zoomChanged) {
 		if(map.zoom == 15) {
 		    // time to show the meters
-		    //
+		    meters = new OpenLayers.Layer.Vector("Parking Meters", {
+			strategies: [new OpenLayers.Strategy.BBOX()],
+			protocol: new OpenLayers.Protocol.WFS({
+			    version: "1.1.0",
+			    url: "http://parkalator.com/geoserver/wfs",
+			    featureType: "SFMTA_meters_0210",
+			    featureNS: "http://parkalator.com/parkws",
+			    srsName: "EPSG:900913"
+			})
+		    });
+		    map.addLayers([meters]);
 		    console.log('add meters');
 		}
 		else { 
