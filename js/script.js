@@ -43,35 +43,57 @@ $(function(){
         })
     });
     
+    avail_pkg = new OpenLayers.Layer.Markers("Available Parking");
     
+    map.addLayers([osm, regions, avail_pkg]);
     
-    map.addLayers([osm]);
-    
+
     osm.events.on({
         moveend: function(e) {
 	    // fetch data for this region
-	    
-            if (e.zoomChanged) {
-		if(map.zoom == 15) {
-		    // time to show the meters
-		    meters = new OpenLayers.Layer.Vector("Parking Meters", {
-			strategies: [new OpenLayers.Strategy.BBOX()],
-			protocol: new OpenLayers.Protocol.WFS({
-			    version: "1.1.0",
-			    url: "http://parkalator.com/geoserver/wfs",
-			    featureType: "SFMTA_meters_0210",
-			    featureNS: "http://parkalator.com/parkws",
-			    srsName: "EPSG:900913"
-			})
-		    });
-		    map.addLayers([meters]);
-		    console.log('add meters');
-		}
-		else { 
-		    // check if meters are visible, if so, hide them
+            if(map.zoom >= 15) {
+		
+		var center = map.center;
+		center.transform(
+		    new OpenLayers.Projection("EPSG:900913") // to Spherical Mercator Projectiontransform(
+		    new OpenLayers.Projection("EPSG:4326"), // transform from WGS 1984
+		);
+		
+		$.get("/api/parking_meters?lat=" + center.lat + "&lng=" + center.lon + "&radius=2000",
+		      function(r) {
+			  for (i in r['meters']) {
+			      var bbox = new OpenLayers.Marker.Box(
+				  new OpenLayers.Bounds(
+				      r['meters'][i]['LOCBEG']['lon'],
+				      r['meters'][i]['LOCBEG']['lat'],
+				      r['meters'][i]['LOCEND']['lon'],
+				      r['meters'][i]['LOCEND']['lat'])
+				      .transform(new OpenLayers.Projection("EPSG:900913"),
+						 new OpenLayers.Projection("EPSG:4326")));
+			      avail_pkg.addMarker(bbox);
+			  } 
+		      })
+		
+		// time to show the meters
+		meters = new OpenLayers.Layer.Vector("Parking Meters", {
+		    strategies: [new OpenLayers.Strategy.BBOX()],
+		    protocol: new OpenLayers.Protocol.WFS({
+			version: "1.1.0",
+			url: "http://parkalator.com/geoserver/wfs",
+			featureType: "SFMTA_meters_0210",
+			featureNS: "http://parkalator.com/parkws",
+			srsName: "EPSG:900913"
+		    })
+		});
+		
+		map.addLayers([meters]);
+		
+		console.log('add meters');
+	    }
+	    else { 
+		// check if meters are visible, if so, hide them
 		    
-		}
-            }
+	    }
         },
     });
     
