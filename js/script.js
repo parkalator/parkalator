@@ -33,11 +33,16 @@ $(function(){
     };
     
     map = new OpenLayers.Map('map', mapOptions );
-    var demolayer = new OpenLayers.Layer.WMS(
+    var osm = new OpenLayers.Layer.WMS(
    	"openstreetmap","http://maps.opengeo.org/geowebcache/service/wms",
-	{layers: 'openstreetmap', format: 'image/png'} 
+			{layers: 'openstreetmap', format: 'image/png'} 
     );
-    map.addLayer(demolayer);
+    var meters = new OpenLayers.Layer.WMS(
+			"SFMTA_meters_0210","http://parkalator.com:8080/geoserver/parkalator/wms",
+			{layers: 'SFMTA_meters_0210,bayarea_zipcodes', transparent: 'true'});
+    //map.addLayer(demolayer);
+    //map.addLayer(meters);
+    map.addLayers([meters, osm]);
     map.setCenter(new OpenLayers.LonLat(-122.4394155, 37.7579295) // Center of the map
 		  .transform(
 		      new OpenLayers.Projection("EPSG:4326"), // transform from WGS 1984
