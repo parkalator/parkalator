@@ -14,28 +14,57 @@ function sfp2parkalator(contents, time) {
     //console.log("Mins is " + mins);
 
     var avls = o.AVL;
+    //console.log(avls.length + " records found");
     for (i=0; i < avls.length; ++i) {
         if (typeof avls[i].BFID !== 'undefined') {
             var rates = avls[i].RATES.RS;
-            for (j=0; j < rates.length; ++j) {
-                rates[j].BEGMIN = timestrToMin(rates[j].BEG, 0);
-                rates[j].ENDMIN = timestrToMin(rates[j].END, 1);
+            //console.log("BFID " + avls[i].BFID + " " + rates.length + " rates found");
+            //console.log(typeof avls[i].RATES.RS);
+            if (typeof rates.length === 'undefined') {
+                //console.log("BFID " + avls[i].BFID + " time is " + rates.BEG + " - " + rates.END);
 
-                if (rates[j].BEGMIN > mins ||
-                    rates[j].ENDMIN < mins)
+                if (typeof rates.BEG === 'undefined')
                     continue;
 
-                rates[j].ID = avls[i].BFID;
-                rates[j].NAME = avls[i].NAME;
-                rates[j].OCC = avls[i].OCC;
-                rates[j].OPER = avls[i].OPER;
-                rates[j].LOC = avls[i].LOC;
+                rates.BEGMIN = timestrToMin(rates.BEG, 0);
+                rates.ENDMIN = timestrToMin(rates.END, 1);
 
-                myrates[l++] = rates[j];
+                //console.log(" Time range " + rates.BEGMIN + " - " + rates.ENDMIN);
+                if (rates.BEGMIN > mins ||
+                    rates.ENDMIN < mins)
+                    continue;
+
+                rates.ID = avls[i].BFID;
+                rates.NAME = avls[i].NAME;
+                rates.OCC = avls[i].OCC;
+                rates.OPER = avls[i].OPER;
+                rates.LOC = avls[i].LOC;
+
+                myrates[l++] = rates;
+
+            } else {
+                for (j=0; j < rates.length; ++j) {
+                    rates[j].BEGMIN = timestrToMin(rates[j].BEG, 0);
+                    rates[j].ENDMIN = timestrToMin(rates[j].END, 1);
+
+                    //console.log("BFID " + avls[i].BFID + " Time range " + rates[j].BEGMIN + " - " + rates[j].ENDMIN);
+                    if (rates[j].BEGMIN > mins ||
+                        rates[j].ENDMIN < mins)
+                        continue;
+
+                    rates[j].ID = avls[i].BFID;
+                    rates[j].NAME = avls[i].NAME;
+                    rates[j].OCC = avls[i].OCC;
+                    rates[j].OPER = avls[i].OPER;
+                    rates[j].LOC = avls[i].LOC;
+
+                    myrates[l++] = rates[j];
+                }
             }
         }
     }
 
+    //console.log(l + " rates returned");
     return myrates;
 }
 
@@ -49,8 +78,17 @@ function time2mins(ts) {
 
 
 var doMunge  = function(err, contents) {
+    var d;
+
     if (err) throw err;
-    var d = new Date();
+
+    if (fileName != null) {
+        var toks = fileName.match(/.*\/sfpark (.*)\.json/);
+        d = new Date(toks[1]);
+    } else {
+        d = new Date();
+    }
+
     console.log(sfp2parkalator(contents, d.toLocaleString()));
 }
 
@@ -79,6 +117,6 @@ function timestrToMin(timestr, end)
 */
 }
 
-
-fs.readFile(process.argv[2], doMunge);
+var fileName = process.argv[2];
+fs.readFile(fileName, doMunge);
 //sys.puts(process.argv[1]);
