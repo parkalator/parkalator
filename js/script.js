@@ -149,7 +149,7 @@ $(function(){
 		counts['maxRate'] = parseFloat(obj['maxRate']);
 		$("#meter-activity").prepend(
 		    $("<li />").append(
-			$("<span />").html(counts['maxRate']).addClass("field")
+			$("<span />").html("$" + parseFloat(counts['maxRate']).toFixed(2)).addClass("field")
 		    ).append(
 			$("<span />").html(" is the most expensive rate in the city.").addClass("data")
 		    ));
