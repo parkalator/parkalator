@@ -88,9 +88,7 @@ $(function(){
     var dataSetMean = new TimeSeries(), dataSetPaidMean = new TimeSeries(), dataSetMaxRate = new TimeSeries();
     
     function updateStat(num, field) {
-	var m = ((parseFloat(num) * 1000) / 100) + "";
-	if(m.length < 4) 
-	    m = m + '0';
+	var m = parseFloat(num).toFixed(2);
 	$(field).html("$" + m);
 	return m;
     }
@@ -151,20 +149,20 @@ $(function(){
 		counts['maxRate'] = parseFloat(obj['maxRate']);
 		$("#meter-activity").prepend(
 		    $("<li />").append(
-			$("<span />").html(counts['maxRate']).addClass("field")
+			$("<span />").html("$" + parseFloat(counts['maxRate']).toFixed(2)).addClass("field")
 		    ).append(
 			$("<span />").html(" is the most expensive rate in the city.").addClass("data")
 		    ));
 	    }	
 	}
 	if ("priceAverage" in obj) {
-	    dataSetMean.append(now, updateStat(obj['priceAverage'], "chart-mean"));
+	    dataSetMean.append(now, updateStat(obj['priceAverage'], "#chart-mean"));
 	}
 	if ("pricePaidAverage" in obj) {
-	    dataSetPaidMean.append(now, updateStat(obj['pricePaidAverage'], "chart-paidMean"));
+	    dataSetPaidMean.append(now, updateStat(obj['pricePaidAverage'], "#chart-paidMean"));
 	}
 	if ("maxRate" in obj) {
-	    dataSetMaxRate.append(now, updateStat(obj['maxRate'], "chart-paidMaxRate"));
+	    dataSetMaxRate.append(now, updateStat(obj['maxRate'], "#chart-paidMaxRate"));
 	}
     });
 
