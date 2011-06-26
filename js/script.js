@@ -111,7 +111,7 @@ $(function(){
     
     smoothie.streamTo(document.getElementById('chart'), 1000);
     
-    var socket = io.connect("http://parkalator.com/");
+    var socket = io.connect("http://parkalator.com/",{ 'port': 8000 });
 
     
     counts = {
