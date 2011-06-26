@@ -144,16 +144,16 @@ $(function(){
     
     socket.on('newData', function(obj){
         var now = new Date().getTime();
-	if ("freeMeters" in obj) {
-	    if (parseInt(obj['freeMeters']) != counts['free']) {
-		if(counts['free'] < parseInt(obj['freeMeters'])) { 
-		    var c = parseInt(obj['freeMeters']) - counts['free'];
+	if ("occupied" in obj) {
+	    if (parseInt(obj['occupied']) != counts['free']) {
+		if(counts['free'] < parseInt(obj['occupied'])) { 
+		    var c = parseInt(obj['occupied']) - counts['free'];
 		    var s = " newly available spots.";
 		} else {
-		    var c = counts['free'] - parseInt(obj['freeMeters']);
+		    var c = counts['free'] - parseInt(obj['occupied']);
 		    var s = " less available spots.";
 		}
-		counts['free'] = parseInt(obj['freeMeters']);
+		counts['free'] = parseInt(obj['occupied']);
 		$("#meter-activity").prepend(
 		    $("<li />").append(
 			$("<span />").html(c).addClass("field")
@@ -163,16 +163,17 @@ $(function(){
 		$("#info-open").html(counts['free'] + " of " + (counts['free']+counts['paid']));
 	    }	
 	}
-	if ("paidMeters" in obj) {
-	    if (parseInt(obj['paidMeters']) != counts['paid']) {
-		if(counts['paid'] < parseInt(obj['paidMeters'])) { 
-		    var c = parseInt(obj['paidMeters']) - counts['paid'];
+	if ("totalMeters" in obj) {
+		var total = parseInt(obj['totalMeters'])-parseInt(obj['occupied']);
+	    if (total != counts['paid']) {
+		if(counts['paid'] < total) { 
+		    var c = total - counts['paid'];
 		    var s = " people have just parked.";
 		} else {
-		    var c = counts['free'] - parseInt(obj['freeMeters']);
+		    var c = counts['paid'] - total;
 		    var s = " people have just left their spots.";
 		}
-		counts['paid'] = parseInt(obj['paidMeters']);
+		counts['paid'] = total;
 		$("#meter-activity").prepend(
 		    $("<li />").append(
 			$("<span />").html(c).addClass("field")
