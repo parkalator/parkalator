@@ -26,8 +26,26 @@
     </div>
     <div id="bottom">
       <div class="m10h">
-	<div class="col">
+	<div class="col" style="width:25%">
 	  <div class="m20 m25l">
+	    <h2>activity</h2>
+	    <ul class="activity" id="meter-activity">
+	    </ul>
+	  </div>
+	</div>
+	<div class="col" style="width:50%">
+	  <div class="m20">
+	    <h2>city price delta</h2>
+	    <canvas id="chart" height="80"></canvas> 
+	    <br class="cf" />
+	    <span class="field">Average:</span> <span class="m20r data" id="chart-mean">$0.00</span>
+	    <span class="field">Average (non-free):</span> <span class="m20r data" id="chart-paidMean">$0.00</span>
+	    <span class="field">Most expensive:</span> <span class="m20r data" id="chart-paidMaxRate">$0.00</span>
+	  </div>
+	</div>
+      </div>
+      <div class="col" style="width:25%">
+	  <div class="m20">
 	    <h2>meter info</h2>
 
 	    <p class="field">Open meters:</p>
@@ -39,22 +57,6 @@
 	    
 	  </div>
 	</div>
-	<div class="col">
-	  <div class="m20">
-	    <h2>activity</h2>
-	    <ul class="activity" id="meter-activity">
-	    </ul>
-	  </div>
-	</div>
-	<div class="col" style="width:34%">
-	  <div class="m20">
-	    <h2>city price delta</h2>
-	    <canvas id="chart" height="80"></canvas> 
-	    <span class="field">Average:</span> <span class="m20r data" id="chart-mean">$0.00</span>
-	    <span class="field">Average (non-free):</span> <span class="m20r data" id="chart-paidMean">$0.00</span>
-	  </div>
-	</div>
-      </div>
     </div>
     <div id="footer">
       <div>
