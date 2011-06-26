@@ -7,7 +7,24 @@ var express = require('express');
 var app = require('express').createServer();
 var sys = require('sys');
 
+var Db = require('mongodb').Db,
+  Connection = require('mongodb').Connection,
+  Server = require('mongodb').Server,
+  // BSON = require('../lib/mongodb').BSONPure;
+  BSON = require('mongodb').BSONNative;
+
+
+var host = process.env['MONGO_NODE_DRIVER_HOST'] != null ? process.env['MONGO_NODE_DRIVER_HOST'] : 'localhost';
+var port = process.env['MONGO_NODE_DRIVER_PORT'] != null ? process.env['MONGO_NODE_DRIVER_PORT'] : Connection.DEFAULT_PORT;
+
+var db = new Db('parkalator', new Server(host, port, {}), {native_parser:true});
+
+
 var callcount = 0;
+
+var socket = io.listen(app); 
+
+
 
 app.use(express.bodyParser());
 app.use(app.router);
@@ -21,14 +38,25 @@ app.get('/', function(req, res){
 
 app.use(express.static(__dirname + '/'));
 
-var clientCount = 0;
+db.open(function(err, db) {
+	db.collection('sfpark', function(err, collection) {
+		setTimeout(function() {
+			var path = "http://api.sfpark.org/sfpark/rest/availabilityservice?lat=37.792275&long=-122.397089&radius=10&uom=mile&pricing=yes&response=json";
+			console.log("downloading data");
+			rest.get(path).on('complete', function(data,response) { 
+				console.log("inserting data");
+				collection.insert(data);
+			});
+		},3000);
 
-var socket = io.listen(app); 
+	});
+});
+
+
+
 
 function sendData(message){
 	var obj = {};
-	obj.calls = callcount;
-	obj.clients = clientCount; 
 	if (message)
 	{
 		obj.msg = message;
@@ -39,3 +67,6 @@ function sendData(message){
 }
 
 app.listen(8000);
+
+
+
