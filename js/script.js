@@ -46,16 +46,18 @@ $(function(){
             version: "1.1.0",
             url: "/geoserver/wfs",
             featureType: "planning_neighborhoods",
+            featureNS: "http://parkalator.com/parkws",
             srsName: "EPSG:2227"
         })
     });
 
-    var meters = new OpenLayers.Layer.Vector("Regions", {
+    var meters = new OpenLayers.Layer.Vector("Parking Meters", {
         strategies: [new OpenLayers.Strategy.BBOX()],
         protocol: new OpenLayers.Protocol.WFS({
             version: "1.1.0",
             url: "/geoserver/wfs",
             featureType: "SFMTA_meters_0210",
+            featureNS: "http://parkalator.com/parkws",
             srsName: "EPSG:2227"
         })
     });
