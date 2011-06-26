@@ -55,7 +55,7 @@ $(function(){
 		
 		var center = map.center;
 		center.transform(
-		    new OpenLayers.Projection("EPSG:900913") // to Spherical Mercator Projectiontransform(
+		    new OpenLayers.Projection("EPSG:900913"), // to Spherical Mercator Projectiontransform(
 		    new OpenLayers.Projection("EPSG:4326"), // transform from WGS 1984
 		);
 		
