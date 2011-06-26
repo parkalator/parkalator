@@ -24,7 +24,6 @@ var db = new Db('parkalator', new Server(dbhost, dbport, {}), {native_parser:tru
 app.use(express.bodyParser());
 app.use(app.router);
 
-
 app.get('/', function(req, res){
 	res.sendfile("index.html");
 	//res.send('Phone calls ' + callcount);
@@ -110,6 +109,22 @@ db.open(function(err, db) {
 						sendData("new data", true);
 				});
 			});
+		},3000);
+
+	});
+});
+
+
+app.get('/api/parking_meters', function(req, res){
+	var lat = req.query.lat,
+		lng = req.query.lng,
+		radius = req.query.radius;
+	
+	var ret = {};
+	
+	parkcollection.find({ "LOCBEG":{"$within" : {"$center" : [{lat:parseFloat(lat),lng:parseFloat(lng)}, parseFloat(radius)]}}}).toArray(function(err, docs) {
+	    ret.meters=docs; 
+		res.send(ret);
 		},5000);
 	});
 });
