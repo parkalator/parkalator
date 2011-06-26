@@ -161,13 +161,13 @@ $(function(){
 	    }	
 	}
 	if ("maxRate" in obj) {
-	    if (parseInt(obj['maxRate']) != counts['maxRate']) {
+	    if (parseFloat(obj['maxRate']) != counts['maxRate']) {
 		counts['maxRate'] = parseFloat(obj['maxRate']);
 		$("#meter-activity").prepend(
 		    $("<li />").append(
 			$("<span />").html("$" + parseFloat(counts['maxRate']).toFixed(2)).addClass("field")
 		    ).append(
-			$("<span />").html(" is the most expensive rate in the city.").addClass("data")
+			$("<span />").html(" is now the most expensive rate in the city.").addClass("data")
 		    ));
 	    }	
 	}
