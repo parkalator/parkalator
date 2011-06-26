@@ -115,19 +115,8 @@ db.open(function(err, db) {
 });
 
 
-app.get('/api/parking_meters', function(req, res){
-	var lat = req.query.lat,
-		lng = req.query.lng,
-		radius = req.query.radius;
-	
-	var ret = {};
-	
-	parkcollection.find({ "LOCBEG":{"$within" : {"$center" : [{lat:parseFloat(lat),lng:parseFloat(lng)}, parseFloat(radius)]}}}).toArray(function(err, docs) {
-	    ret.meters=docs; 
-		res.send(ret);
-		},5000);
-	});
-});
+
+
 
 function sendData(message,newData){
 	var obj = {};
