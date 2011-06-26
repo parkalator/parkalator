@@ -35,20 +35,24 @@ $(function(){
     map = new OpenLayers.Map('map', mapOptions );
     var osm = new OpenLayers.Layer.WMS(
    	"openstreetmap","http://maps.opengeo.org/geowebcache/service/wms",
-			{layers: 'openstreetmap', format: 'image/png'} 
+			{layers: 'openstreetmap', format: 'image/png', isBaseLayer: true, rendererOptions: {yOrdering: true}} 
     );
     /*var gs = new OpenLayers.Layer.WMS(
 	"GeoServer","http://parkalator.com:8080/geoserver/parkalator/wms",
 	{layers: 'SFMTA_meters_0210,bayarea_zipcodes', transparent: 'true'});*/
     var regions = new OpenLayers.Layer.Vector("Regions", {
         strategies: [new OpenLayers.Strategy.BBOX()],
+        projection:  new OpenLayers.Projection("EPSG:2227"),
         protocol: new OpenLayers.Protocol.WFS({
             version: "1.1.0",
             url: "/geoserver/wfs",
             featureType: "planning_neighborhoods",
             featureNS: "http://parkalator.com/parkws",
-            srsName: "EPSG:2227"
-        })
+            srsName: "EPSG:2227",
+            //schema: "http://parkalator.com:8080/geoserver/wfs/DescribeFeatureType?version=1.1.0&typename=parkalator:planning_neighborhoods",
+            featurePrefix: "parkalator"
+        }),
+	isBaseLayer: true
     });
 
     var meters = new OpenLayers.Layer.Vector("Parking Meters", {
@@ -59,15 +63,15 @@ $(function(){
             featureType: "SFMTA_meters_0210",
             featureNS: "http://parkalator.com/parkws",
             srsName: "EPSG:2227"
-        })
+        }),
     });
 
-    map.addLayer(osm);
-    map.addLayer(regions);
+    map.addLayers([ regions]);
+
 
     map.setCenter(new OpenLayers.LonLat(-122.4394155, 37.7579295) // Center of the map
 		  .transform(
-		      new OpenLayers.Projection("EPSG:4326"), // transform from WGS 1984
+		      new OpenLayers.Projection("EPSG:2227"), // transform from WGS 1984
 		      new OpenLayers.Projection("EPSG:900913") // to Spherical Mercator Projection
 		  ), 13 // Zoom level
 		 );
