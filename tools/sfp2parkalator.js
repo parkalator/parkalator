@@ -39,6 +39,9 @@ function sfp2parkalator(contents, time) {
                 rates.OCC = avls[i].OCC;
                 rates.OPER = avls[i].OPER;
                 rates.LOC = avls[i].LOC;
+                latlong = loc2LatLong(rates.LOC);
+                rates.LAT = latlong[0];
+                rates.LNG = latlong[1];
 
                 myrates[l++] = rates;
 
@@ -58,6 +61,10 @@ function sfp2parkalator(contents, time) {
                     rates[j].OPER = avls[i].OPER;
                     rates[j].LOC = avls[i].LOC;
 
+                    latlong = loc2LatLong(rates[j].LOC);
+                    rates[j].LAT = latlong[0];
+                    rates[j].LNG = latlong[1];
+                    //console.log("Lat " + latlong[0] + ", " + "Lng" + latlong[1]);
                     myrates[l++] = rates[j];
                 }
             }
@@ -66,6 +73,11 @@ function sfp2parkalator(contents, time) {
 
     //console.log(l + " rates returned");
     return myrates;
+}
+
+
+function loc2LatLong(loc) {
+    return loc.split(",");
 }
 
 function time2mins(ts) {
