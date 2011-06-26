@@ -44,7 +44,7 @@ $(function(){
         strategies: [new OpenLayers.Strategy.BBOX()],
         protocol: new OpenLayers.Protocol.WFS({
             version: "1.1.0",
-            url: "/geoserver/parkalator/wfs",
+            url: "/geoserver/wfs",
             featureType: "planning_neighborhoods",
             srsName: "EPSG:2227"
         })
@@ -54,7 +54,7 @@ $(function(){
         strategies: [new OpenLayers.Strategy.BBOX()],
         protocol: new OpenLayers.Protocol.WFS({
             version: "1.1.0",
-            url: "/geoserver/parkalator/wfs",
+            url: "/geoserver/wfs",
             featureType: "SFMTA_meters_0210",
             srsName: "EPSG:2227"
         })
