@@ -75,7 +75,7 @@ $(function(){
     
     /* smoothie ingredients */
     
-    var dataSetMode = new TimeSeries(), dataSetMedian = new TimeSeries();
+    var dataSetMean = new TimeSeries(), dataSetPaidMean = new TimeSeries();
     
     function mean(num) {
 	var m = ((parseFloat(num) * 1000) / 100) + "";
@@ -85,11 +85,11 @@ $(function(){
 	return m;
     }
 
-    function median(num) {
+    function paidMean(num) {
 	var m = ((parseFloat(num) * 1000) / 100) + "";
 	if(m.length < 4)
 	    m = m + '0';
-	$("#chart-med").html("$" + m);
+	$("#chart-paidMean").html("$" + m);
 	return m;
     }
 
@@ -105,8 +105,8 @@ $(function(){
 	}
     });
     
-    smoothie.addTimeSeries(dataSetMode, { strokeStyle: 'rgba(255, 0, 0, 1)', fillStyle: 'rgba(255, 0, 0, 0.2)', lineWidth: 1 });
-    smoothie.addTimeSeries(dataSetMedian, { strokeStyle: 'rgba(0, 255, 0, 1)', fillStyle: 'rgba(0, 255, 0, 0.2)', lineWidth: 1 });
+    smoothie.addTimeSeries(dataSetMean, { strokeStyle: 'rgba(255, 0, 0, 1)', fillStyle: 'rgba(255, 0, 0, 0.2)', lineWidth: 1 });
+    smoothie.addTimeSeries(dataSetPaidMean, { strokeStyle: 'rgba(0, 255, 0, 1)', fillStyle: 'rgba(0, 255, 0, 0.2)', lineWidth: 1 });
     
     smoothie.streamTo(document.getElementById('chart'), 1000);
     
@@ -117,10 +117,12 @@ $(function(){
     });
     
     socket.on('message', function(obj){
-	if ("prices" in obj) {
-            var now = new Date().getTime();
-	    dataSetMean.append(now, mean(obj['prices']['mean']));
-	    dataSetMode.append(now, median(obj['prices']['median']));
+        var now = new Date().getTime();
+	if ("priceAverage" in obj) {
+	    dataSetMean.append(now, mean(obj['priceAverage']));
+	}
+	if ("pricePaidAverage" in obj) {
+	    dataSetPaidMean.append(now, paidMean(obj['pricePaidAverage']));
 	}
     });
     
