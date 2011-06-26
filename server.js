@@ -142,7 +142,7 @@ function sendData(message,newData){
 
 app.listen(8000);
 
-socket = io.listen(app); 
+socket = io.listen(3000); 
 
 socket.sockets.on('connection', function(client){ 
 	sendData("");
