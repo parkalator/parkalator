@@ -8,7 +8,7 @@ var express = require('express');
 var app = require('express').createServer();
 var io = require('socket.io');
 var sys = require('sys');
-
+var socket;
 var Db = require('mongodb').Db,
   Connection = require('mongodb').Connection,
   Server = require('mongodb').Server,
@@ -30,18 +30,6 @@ app.get('/', function(req, res){
 
 app.use(express.static(__dirname + '/'));
 
-var socket = io.listen(app); 
-
-socket.sockets.on('connection', function(client){ 
-	sendData("");
-	client.on('message', function(msg){ 
-		//sendData(); 
-		console.log(msg);
-	});
-  	client.on('disconnect', function(){
-		
-	});
-});
 
 app.get('/api/parking_meters', function(req, res){
 	var lat = req.query.lat,
@@ -129,7 +117,7 @@ db.open(function(err, db) {
 
 	});
 });
-
+var c = 0;
 function sendData(message,newData){
 	var obj = {};
 	if (newData) {
@@ -141,13 +129,28 @@ function sendData(message,newData){
 	}
 	obj.dataDate = currentStats.date;
 	obj.priceAverage = currentStats.priceaverage;
-	obj.pricePaidAverage = currentStats.pricepaidaverage;
+	obj.pricePaidAverage = currentStats.pricepaidaverage + (c++);
 	obj.maxRate = currentStats.maxRate;
 	obj.freeMeters = currentStats.freeMeters;
-	obj.paidMeters = currentStats.paidMeters;
+	obj.paidMeters = currentStats.paidMeters; 
 	console.log("message");
 	console.log(obj)
-	socket.sockets.json.send(obj);
+	socket.sockets.emit("newData",obj);
 }
 
 app.listen(8000);
+
+socket = io.listen(app); 
+
+socket.sockets.on('connection', function(client){ 
+	sendData("");
+	client.on('message', function(msg){ 
+		//sendData(); 
+		console.log(msg);
+	});
+  	client.on('disconnect', function(){
+		
+	});
+});
+
+

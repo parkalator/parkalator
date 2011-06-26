@@ -123,16 +123,42 @@ $(function(){
     var socket = io.connect();
 
     
+    counts = {
+	'free': 0,
+	'paid': 0,
+    };
+    
     socket.on('newData', function(obj){
         var now = new Date().getTime();
+		if ("freeMeters" in obj) {
+		    if (parseInt(obj['freeMeters']) > counts['free']) {
+			counts['free'] = parseInt(obj['freeMeters']);
+			$("#meter-activity").prepend(
+			    $("<li />").append(
+				$("<span />").html(counts['free']).addClass("field")
+			    ).append(
+				$("<span />").html(" available free meters.").addClass("data")
+			    ));
+		    }	
+		}
+		if ("paidMeters" in obj) {
+		    if (parseInt(obj['paidMeters']) > counts['paid']) {
+			counts['paid'] = parseInt(obj['paidMeters']);
+			$("#meter-activity").prepend(
+			    $("<li />").append(
+				$("<span />").html(counts['paid']).addClass("field")
+			    ).append(
+				$("<span />").html(" available paid meters.").addClass("data")
+			    ));
+		    }	
+		}
 		if ("priceAverage" in obj) {
-	    	dataSetMean.append(now, mean(obj['priceAverage']));
+		    dataSetMean.append(now, mean(obj['priceAverage']));
 		}
 		if ("pricePaidAverage" in obj) {
-	    	dataSetPaidMean.append(now, paidMean(obj['pricePaidAverage']));
+		    dataSetPaidMean.append(now, paidMean(obj['pricePaidAverage']));
 		}
     });
-    
 
     $("#hide-legend").click(function() {
 	if($(this).html() == '(hide)') {
