@@ -114,9 +114,9 @@ $(function(){
     var dataSetMean = new TimeSeries(), dataSetPaidMean = new TimeSeries(), dataSetMaxRate = new TimeSeries();
     
     function updateStat(num, field) {
-	var m = parseFloat(num).toFixed(2);
-	$(field).html("$" + m);
-	return m;
+		var m = num.toFixed(2);
+		$(field).text("$" + m);
+		return m;
     }
     
     // Build the timeline
@@ -188,8 +188,8 @@ $(function(){
 	    }	
 	}
 	if ("maxRate" in obj) {
-	    if (parseFloat(obj['maxRate']) != counts['maxRate']) {
-		counts['maxRate'] = parseFloat(obj['maxRate']);
+	    if (obj['maxRate'] != counts['maxRate']) {
+		counts['maxRate'] = obj['maxRate'];
 		$("#meter-activity").prepend(
 		    $("<li />").append(
 			$("<span />").html("$" + parseFloat(counts['maxRate']).toFixed(2)).addClass("field")
@@ -197,6 +197,9 @@ $(function(){
 			$("<span />").html(" is now the most expensive rate in the city.").addClass("data")
 		    ));
 	    }	
+	}
+	if ("freeMeters" in obj) {
+		$("#info-paidmeters").html("Paid: " + obj.paidMeters + " - Free: " + obj.freeMeters);
 	}
 	if ("priceAverage" in obj) {
 	    dataSetMean.append(now, updateStat(obj['priceAverage'], "#chart-mean"));
