@@ -86,22 +86,33 @@ db.open(function(err, db) {
 						var rateTotal = 0.0;
 						var rateZeroTotal = 0.0;
 						var maxRate = 0.0;
+						var occupied = 0;
+						var totalmeters = 0;
 						for (var i=0;i<data.length;i++){
+							
 							var rate = parseFloat(data[i].RATE);
+							var meters = parseInt(data[i].OPER);
 							if (rate > 0)
 							{
-								rateCount++;
-								rateTotal+=rate;
+								rateCount+=meters;
+								rateTotal+=(rate*meters);
+								
 							}
-							rateZeroCount++;
-							rateZeroTotal+=rate;
+
+							rateZeroCount+=meters;
+							rateZeroTotal+=(rate*meters);
 							if (rate>maxRate)
 								maxRate = rate;
+							
+							occupied += parseInt(data[i].OCC);
+							totalmeters += parseInt(data[i].OPER);
 						}
 						//console.log(rateCount);
 						//console.log(rateZeroCount);
 						//console.log(maxRate);
 						var statData = {};
+						statData.occupied = occupied;
+						statData.totalMeters = totalmeters;
 						statData.date = (new Date()).toLocaleString();
 						statData.maxRate = maxRate;
 						statData.freeMeters = rateZeroCount-rateCount;
@@ -128,6 +139,8 @@ function sendData(message,newData){
 		obj.msg = message;
 	}
 	if (currentStats){
+		obj.occupied = currentStats.occupied;
+		obj.totalMeters = currentStats.totalMeters;
 		obj.dataDate = currentStats.date;
 		obj.priceAverage = currentStats.priceaverage;
 		obj.pricePaidAverage = currentStats.pricepaidaverage;
