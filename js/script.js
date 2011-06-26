@@ -186,9 +186,9 @@ $(function(){
 	}
     });
     
-    $("#chart").attr('width', ($("#bottom").width() / 2)-60);
+    $("#chart").attr('width', ($("#bottom").width() / 2)-50);
     $(window).resize(function() {
-	$("#chart").attr('width', ($("#bottom").width() / 2)-60);
+	$("#chart").attr('width', ($("#bottom").width() / 2)-50);
     });
     
 });
