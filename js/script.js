@@ -28,24 +28,34 @@ $(function(){
             featureType: "planning_neighborhoods",
             featureNS: "http://parkalator.com/parkws",
             srsName: "EPSG:2227",
-            schema: "http://parkalator.com:8080/geoserver/wfs/DescribeFeatureType?version=1.1.0&typename=parkalator:planning_neighborhoods",
             featurePrefix: "parkalator"
         })
     });
 
-    /*var meters = new OpenLayers.Layer.Vector("Parking Meters", {
+    regions = new OpenLayers.Layer.Vector("Parking Meters", {
         strategies: [new OpenLayers.Strategy.BBOX()],
         protocol: new OpenLayers.Protocol.WFS({
             version: "1.1.0",
             url: "http://parkalator.com/geoserver/wfs",
-            featureType: "SFMTA_meters_0210",
+            featureType: "planning_neighborhoods",
             featureNS: "http://parkalator.com/parkws",
-            srsName: "EPSG:2227",
-	    featurePrefix: 'parkalator',
+            srsName: "EPSG:900913"
         })
-    });*/
+    });
+    
+    meters = new OpenLayers.Layer.Vector("Parking Meters", {
+        strategies: [new OpenLayers.Strategy.BBOX()],
+        protocol: new OpenLayers.Protocol.WFS({
+            version: "1.1.0",
+            url: "http://parkalator.com/geoserver/wfs",
+            featureType: "planning_neighborhoods",
+            featureNS: "http://parkalator.com/parkws",
+            srsName: "EPSG:900913"
+        })
+    });
+    
 
-    map.addLayers([osm, regions]);//, meters]);
+    map.addLayers([osm, meters]);
 
     osm.events.on({
         moveend: function(e) {
