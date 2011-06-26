@@ -33,11 +33,38 @@ $(function(){
     };
     
     map = new OpenLayers.Map('map', mapOptions );
-    var demolayer = new OpenLayers.Layer.WMS(
+    var osm = new OpenLayers.Layer.WMS(
    	"openstreetmap","http://maps.opengeo.org/geowebcache/service/wms",
-	{layers: 'openstreetmap', format: 'image/png'} 
+			{layers: 'openstreetmap', format: 'image/png'} 
     );
-    map.addLayer(demolayer);
+    /*var gs = new OpenLayers.Layer.WMS(
+	"GeoServer","http://parkalator.com:8080/geoserver/parkalator/wms",
+	{layers: 'SFMTA_meters_0210,bayarea_zipcodes', transparent: 'true'});*/
+    var regions = new OpenLayers.Layer.Vector("Regions", {
+        strategies: [new OpenLayers.Strategy.BBOX()],
+        protocol: new OpenLayers.Protocol.WFS({
+            version: "1.1.0",
+            url: "/geoserver/wfs",
+            featureType: "planning_neighborhoods",
+            featureNS: "http://parkalator.com/parkws",
+            srsName: "EPSG:2227"
+        })
+    });
+
+    var meters = new OpenLayers.Layer.Vector("Parking Meters", {
+        strategies: [new OpenLayers.Strategy.BBOX()],
+        protocol: new OpenLayers.Protocol.WFS({
+            version: "1.1.0",
+            url: "/geoserver/wfs",
+            featureType: "SFMTA_meters_0210",
+            featureNS: "http://parkalator.com/parkws",
+            srsName: "EPSG:2227"
+        })
+    });
+
+    map.addLayer(osm);
+    map.addLayer(regions);
+
     map.setCenter(new OpenLayers.LonLat(-122.4394155, 37.7579295) // Center of the map
 		  .transform(
 		      new OpenLayers.Projection("EPSG:4326"), // transform from WGS 1984

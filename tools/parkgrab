@@ -1,0 +1,6 @@
+#!/bin/bash
+
+while [ 1 ]; do
+    wget -O "sfpark `date`.json" `./url`;
+    sleep 60
+done
