@@ -55,8 +55,8 @@ db.open(function(err, db) {
 	db.collection('sfpark', function(err, collection) {
 		parkcollection = collection;
 		
-		//parkcollection.ensureIndex({"LOCBEG" : "2d"});
-		//parkcollection.ensureIndex({"LOCEND" : "2d"});
+		parkcollection.ensureIndex({"LOCBEG" : "2d"},null,function(){});
+		parkcollection.ensureIndex({"LOCEND" : "2d"},null,function(){});
 		setTimeout(function() {
 			var path = "http://api.sfpark.org/sfpark/rest/availabilityservice?lat=37.792275&long=-122.397089&radius=100&uom=mile&pricing=yes&response=json";
 			console.log("downloading data");
