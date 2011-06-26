@@ -123,29 +123,45 @@ $(function(){
     socket.on('newData', function(obj){
         var now = new Date().getTime();
 	if ("freeMeters" in obj) {
-	    if (parseInt(obj['freeMeters']) > counts['free']) {
+	    if (parseInt(obj['freeMeters']) != counts['free']) {
+		if(counts['free'] < parseInt(obj['freeMeters'])) { 
+		    var c = parseInt(obj['freeMeters']) - counts['free'];
+		    var s = " newly available spots.";
+		} else {
+		    var c = counts['free'] - parseInt(obj['freeMeters']);
+		    var s = " less available spots.";
+		}
 		counts['free'] = parseInt(obj['freeMeters']);
 		$("#meter-activity").prepend(
 		    $("<li />").append(
-			$("<span />").html(counts['free']).addClass("field")
+			$("<span />").html(c).addClass("field")
 		    ).append(
-			$("<span />").html(" available free meters.").addClass("data")
+			$("<span />").html(s).addClass("data")
 		    ));
+		$("#info-open").html(counts['free'] + " of " + (counts['free']+counts['paid']));
 	    }	
 	}
 	if ("paidMeters" in obj) {
-	    if (parseInt(obj['paidMeters']) > counts['paid']) {
+	    if (parseInt(obj['paidMeters']) != counts['paid']) {
+		if(counts['paid'] < parseInt(obj['paidMeters'])) { 
+		    var c = parseInt(obj['paidMeters']) - counts['paid'];
+		    var s = " people have just parked.";
+		} else {
+		    var c = counts['free'] - parseInt(obj['freeMeters']);
+		    var s = " people have just left their spots.";
+		}
 		counts['paid'] = parseInt(obj['paidMeters']);
 		$("#meter-activity").prepend(
 		    $("<li />").append(
-			$("<span />").html(counts['paid']).addClass("field")
+			$("<span />").html(c).addClass("field")
 		    ).append(
-			$("<span />").html(" available paid meters.").addClass("data")
+			$("<span />").html(s).addClass("data")
 		    ));
+		$("#info-open").html(counts['free'] + " of " + (counts['free']+counts['paid']));
 	    }	
 	}
 	if ("maxRate" in obj) {
-	    if (parseInt(obj['maxRate']) > counts['maxRate']) {
+	    if (parseInt(obj['maxRate']) != counts['maxRate']) {
 		counts['maxRate'] = parseFloat(obj['maxRate']);
 		$("#meter-activity").prepend(
 		    $("<li />").append(
