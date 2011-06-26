@@ -1,11 +1,12 @@
 var opts = {};
-var io = require('socket.io'); 
+
 var sfp = require("./tools/sfp2parkalator")
 opts.port = 20200;
 
 var rest = require('restler');
 var express = require('express');
 var app = require('express').createServer();
+var io = require('socket.io');
 var sys = require('sys');
 
 var Db = require('mongodb').Db,
@@ -20,14 +21,8 @@ var dbport = process.env['MONGO_NODE_DRIVER_PORT'] != null ? process.env['MONGO_
 
 var db = new Db('parkalator', new Server(dbhost, dbport, {}), {native_parser:true});
 
-var socket = io.listen(app); 
-
-
-
 app.use(express.bodyParser());
 app.use(app.router);
-
-
 
 
 app.get('/', function(req, res){
@@ -37,44 +32,18 @@ app.get('/', function(req, res){
 
 app.use(express.static(__dirname + '/'));
 
+var socket = io.listen(app); 
 
-socket.on('connection', function(client){ 
+socket.sockets.on('connection', function(client){ 
 	sendData();
-	client.on('message', function(msg){ sendData(); 
-			console.log(msg);
+	client.on('message', function(msg){ 
+		sendData(); 
+		console.log(msg);
 	});
   	client.on('disconnect', function(){
 	
 	});
 });
-
-
-
-var parkcollection;
-db.open(function(err, db) {
-	db.collection('sfpark', function(err, collection) {
-		parkcollection = collection;
-		
-		parkcollection.ensureIndex({"LOCBEG" : "2d"},null,function(){});
-		parkcollection.ensureIndex({"LOCEND" : "2d"},null,function(){});
-		setTimeout(function() {
-			var path = "http://api.sfpark.org/sfpark/rest/availabilityservice?lat=37.792275&long=-122.397089&radius=100&uom=mile&pricing=yes&response=json";
-			console.log("downloading data");
-			rest.get(path).on('complete', function(data,response) { 
-					collection.remove({}, function(err, result) {
-						console.log("inserting data");
-						console.log(data);
-						data = sfp.sfp2parkalator(data,(new Date()).toLocaleString());
-						collection.insert(data);
-						for (var item in data){
-							
-						}
-				});
-			});
-		},3000);
-	});
-});
-
 
 app.get('/api/parking_meters', function(req, res){
 	var lat = req.query.lat,
@@ -91,7 +60,59 @@ app.get('/api/parking_meters', function(req, res){
 
 
 
+var priceaverage = 0.0;
+var pricepaidaverage = 0.0;
+var maxRate = 0.0;
+var paidMeters = 0;
+var freeMeters = 0;
 
+var parkcollection;
+db.open(function(err, db) {
+	db.collection('sfpark', function(err, collection) {
+		parkcollection = collection;
+		
+		parkcollection.ensureIndex({"LOCBEG" : "2d"},null,function(){});
+		parkcollection.ensureIndex({"LOCEND" : "2d"},null,function(){});
+		setInterval(function() {
+			var path = "http://api.sfpark.org/sfpark/rest/availabilityservice?lat=37.792275&long=-122.397089&radius=100&uom=mile&pricing=yes&response=json";
+			console.log("downloading data");
+			rest.get(path).on('complete', function(data,response) { 
+					collection.remove({}, function(err, result) {
+						//console.log("inserting data");
+						//console.log(data);
+						data = sfp.sfp2parkalator(data,(new Date()).toLocaleString());
+						collection.insert(data);
+						var rateCount = 0;
+						var rateZeroCount = 0;
+						var rateTotal = 0.0;
+						var rateZeroTotal = 0.0;
+						maxRate = 0.0;
+						for (var i=0;i<data.length;i++){
+							var rate = parseFloat(data[i].RATE);
+							if (rate > 0)
+							{
+								rateCount++;
+								rateTotal+=rate;
+							}
+							rateZeroCount++;
+							rateZeroTotal+=rate;
+							if (rate>maxRate)
+								maxRate = rate;
+						}
+						//console.log(rateCount);
+						//console.log(rateZeroCount);
+						//console.log(maxRate);
+						
+						freeMeters = rateZeroCount-rateCount;
+						paidMeters = rateCount;
+						priceaverage = rateZeroTotal/rateZeroCount;
+						pricepaidaverage = rateTotal/rateCount;
+						sendData("new data");
+				});
+			});
+		},5000);
+	});
+});
 
 function sendData(message){
 	var obj = {};
@@ -99,9 +120,14 @@ function sendData(message){
 	{
 		obj.msg = message;
 	}
+	obj.priceAverage = priceaverage;
+	obj.pricePaidAverage = pricepaidaverage;
+	obj.maxRate = maxRate;
+	obj.freeMeters = freeMeters;
+	obj.paidMeters = paidMeters;
 	console.log("message");
 	console.log(obj)
-	socket.broadcast(obj);
+	socket.sockets.send(obj);
 }
 
 app.listen(8000);
