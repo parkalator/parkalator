@@ -68,8 +68,9 @@ $(function(){
 				      r['meters'][i]['LOCBEG']['lat'],
 				      r['meters'][i]['LOCEND']['lon'],
 				      r['meters'][i]['LOCEND']['lat'])
-				      .transform(new OpenLayers.Projection("EPSG:900913"),
-						 new OpenLayers.Projection("EPSG:4326")));
+				      .transform(
+					  new OpenLayers.Projection("EPSG:4326"),
+					  new OpenLayers.Projection("EPSG:900913")));
 			      avail_pkg.addMarker(bbox);
 			  } 
 		      })
