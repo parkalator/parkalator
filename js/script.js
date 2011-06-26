@@ -120,24 +120,17 @@ $(function(){
     
     smoothie.streamTo(document.getElementById('chart'), 1000);
     
-    var socket = new io.Socket(); 
-    socket.connect();
-    socket.on('connect', function(){ 
-	
-    });
+    var socket = io.connect();
+
     
-    socket.on('message', function(obj){
+    socket.on('newData', function(obj){
         var now = new Date().getTime();
-	if ("priceAverage" in obj) {
-	    dataSetMean.append(now, mean(obj['priceAverage']));
-	}
-	if ("pricePaidAverage" in obj) {
-	    dataSetPaidMean.append(now, paidMean(obj['pricePaidAverage']));
-	}
-    });
-    
-    socket.on('disconnect', function(){
-	
+		if ("priceAverage" in obj) {
+	    	dataSetMean.append(now, mean(obj['priceAverage']));
+		}
+		if ("pricePaidAverage" in obj) {
+	    	dataSetPaidMean.append(now, paidMean(obj['pricePaidAverage']));
+		}
     });
     
 
