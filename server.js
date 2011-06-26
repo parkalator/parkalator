@@ -148,9 +148,7 @@ socket.configure('production', function(){
   socket.set('log level', 1);
 
   socket.set('transports', [
-   'flashsocket'
-  , 'htmlfile'
-  , 'xhr-polling'
+  'xhr-polling'
   , 'jsonp-polling'
   ]);
 });
@@ -159,9 +157,7 @@ socket.configure('development', function(){
   socket.enable('browser client etag');
   socket.set('log level', 1);
   socket.set('transports', [
-   'flashsocket'
-  , 'htmlfile'
-  , 'xhr-polling'
+  'xhr-polling'
   , 'jsonp-polling'
   ]);
 });
