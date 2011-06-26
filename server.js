@@ -142,7 +142,8 @@ function sendData(message,newData){
 
 app.listen(8000);
 
-socket = io.listen(3000); 
+socket = io.listen(app); 
+socket.set('transports', ['jsonp-polling']);
 
 socket.sockets.on('connection', function(client){ 
 	sendData("");
