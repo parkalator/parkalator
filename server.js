@@ -127,12 +127,14 @@ function sendData(message,newData){
 	{
 		obj.msg = message;
 	}
-	obj.dataDate = currentStats.date;
-	obj.priceAverage = currentStats.priceaverage;
-	obj.pricePaidAverage = currentStats.pricepaidaverage + (c++);
-	obj.maxRate = currentStats.maxRate;
-	obj.freeMeters = currentStats.freeMeters;
-	obj.paidMeters = currentStats.paidMeters; 
+	if (currentStats){
+		obj.dataDate = currentStats.date;
+		obj.priceAverage = currentStats.priceaverage;
+		obj.pricePaidAverage = currentStats.pricepaidaverage + (c++);
+		obj.maxRate = currentStats.maxRate;
+		obj.freeMeters = currentStats.freeMeters;
+		obj.paidMeters = currentStats.paidMeters; 
+	}
 	console.log("message");
 	console.log(obj)
 	socket.sockets.emit("newData",obj);
