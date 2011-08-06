@@ -24,7 +24,7 @@ function loadLines (map)
 		ajaxRequest = null;
 	}
 	ajaxRequest = $.ajax({
-	  url: '/api/parking_meters?lat=37.778734661&lng=-122.4318517401&radius=0.01',
+	  url: '/api/parking_meters?lat=37.778734661&lng=-122.4318517401&radius=10',
 	  success: function(data) {
 		ajaxRequest = null;
 		clearOverlays();
