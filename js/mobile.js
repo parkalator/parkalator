@@ -1,3 +1,8 @@
+Ext.gesture.Manager.onMouseEvent = function(e) {
+if (!e.isSimulated)
+e.stopPropagation();
+}
+
 var map_overlays = [];
 var ajaxRequest = null;
 function clearOverlays() {
@@ -26,6 +31,7 @@ var clickedWin = function(event) {
 	infowin.setPosition(event.latLng);
     infowin.open(this.getMap());
 }
+
 
 function loadLines (map)
 {
@@ -85,11 +91,11 @@ function loadLines (map)
 				      strokeColor: color,
 				      strokeOpacity: 1.0,
 				      strokeWeight: 7.0,
-					  map:map,
-					  draggable: true
+					  map:map
+					  //draggable: true
 				});
 				
-				google.maps.event.addListener(line, 'mousedown', clickedWin);
+				google.maps.event.addListener(line, 'click', clickedWin);
 				//map_overlays.push(marker);
 				map_overlays.push(line);
 			}
@@ -185,7 +191,7 @@ Ext.setup({
                 zoom : 12,
                 mapTypeId : google.maps.MapTypeId.ROADMAP,
                 navigationControl: true,
-				draggable: true,
+				//draggable: true,
                 navigationControlOptions: {
                         style: google.maps.NavigationControlStyle.DEFAULT
                     }
