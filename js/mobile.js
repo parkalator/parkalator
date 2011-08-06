@@ -39,6 +39,10 @@ function loadLines (map)
 				        new google.maps.LatLng(meter.LOCEND.lat, meter.LOCEND.lng)
 				];
 				
+				var center = new google.maps.LatLng(
+					((meter.LOCBEG.lat+meter.LOCEND.lat)/2.0),
+					((meter.LOCBEG.lng+meter.LOCEND.lng)/2.0));
+				
 				var rate = parseFloat(meter.RATE);
 				var color = "#00FF00";
 				
@@ -56,6 +60,13 @@ function loadLines (map)
 					color = "#F87431";
 				}
 				
+				
+				var marker = new google.maps.Marker({
+				      position: center, 
+				      map: map, 
+				      title:meter.NAME
+				});
+				
 				var line = new google.maps.Polyline({
 				      path: lineCords,
 				      strokeColor: color,
@@ -64,12 +75,13 @@ function loadLines (map)
 					  map:map
 				});
 				
-				google.maps.event.addListener(line, 'click', function() {
+				google.maps.event.addListener(marker, 'click', function() {
 					var infowin = new google.maps.InfoWindow({
 			            content: meter.NAME
 			        })
-			        infowin.open(map, line);
+			        infowin.open(map, marker);
 			    });
+				map_overlays.push(marker);
 				map_overlays.push(line);
 			}
 		}
