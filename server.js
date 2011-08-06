@@ -28,6 +28,11 @@ app.get('/', function(req, res){
 	//res.send('Phone calls ' + callcount);
 });
 
+app.get('/mobile', function(req, res){
+	res.sendfile("mobile.html");
+	//res.send('Phone calls ' + callcount);
+});
+
 app.use(express.static(__dirname + '/'));
 
 
