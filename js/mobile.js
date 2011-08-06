@@ -14,14 +14,14 @@ Ext.setup({
 
                 //Tracking Marker Image
                 image = new google.maps.MarkerImage(
-                    'point.png',
+                    '/img/point.png',
                     new google.maps.Size(32, 31),
                     new google.maps.Point(0,0),
                     new google.maps.Point(16, 31)
                   ),
 
                 shadow = new google.maps.MarkerImage(
-                    'shadow.png',
+                    '/img/shadow.png',
                     new google.maps.Size(64, 52),
                     new google.maps.Point(0,0),
                     new google.maps.Point(-5, 42)
