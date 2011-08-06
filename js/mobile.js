@@ -137,19 +137,7 @@ Ext.setup({
                 }]
                 });
 		
-		
-
-		mapAjax =  new Ext.Ajax.request({
-				    url: '/api/parking_meters?lat=37.778734661&lng=-122.4318517401&radius=0.01',
-				    params: {
-				        paramName: 'paramValue'
-				    },
-				    timeout: 3000,
-				    method: 'GET',
-				    success: function(xhr) {
-				        alert('Response is "' + xhr.responseText + '"');
-				    }
-				});
+	
 		
         mapdemo = new Ext.Map({
 			
