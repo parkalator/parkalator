@@ -1,12 +1,12 @@
-var overlays = [];
+var map_overlays = [];
 
 function clearOverlays() {
-  if (overlays.length > 0) {
-    for (i in overlays) {
-      overlays[i].setMap(null);
+  if (map_overlays.length > 0) {
+    for (i in map_overlays) {
+      map_overlays[i].setMap(null);
     }
   }
-  overlays.length=0;
+  map_overlays.length=0;
 }
 
 
@@ -29,7 +29,7 @@ function addLine (lat1,lon1,lat2,lon2,meter,map) {
         })
         infowin.open(map, line);
     });
-	overlays.push(line);
+	map_overlays.push(line);
 }
 
 
@@ -146,7 +146,7 @@ Ext.setup({
                                      title : 'TEST',
                                      map: map
                                 });
-					overlays.push(marker);
+					map_overlays.push(marker);
 				},
 				
                 maprender : function(comp, map){
