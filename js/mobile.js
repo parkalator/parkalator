@@ -9,8 +9,9 @@ Ext.setup({
 		
 		var clearOverlays = function () {
 		  if (overlays) {
-		    for (i in overlays) {
-		      i.setMap(null);
+			var i=0;
+		    for (i=0;i<overlays.length();i++) {
+		      overlays[i].setMap(null);
 		    }
 		  }
 		  overlays = [];
