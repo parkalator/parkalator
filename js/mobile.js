@@ -1,8 +1,7 @@
 var overlays = [];
 
 function clearOverlays() {
-  if (overlays) {
-	var i=0;
+  if (overlays.length > 0) {
     for (i in overlays) {
       overlays[i].setMap(null);
     }
