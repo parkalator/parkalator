@@ -3,7 +3,7 @@ var map_overlays = [];
 function clearOverlays() {
   if (map_overlays.length > 0) {
 	var i = 0;
-    for (i=0;i>map_overlays.length;i++) {
+    for (i=0;i<map_overlays.length;i++) {
       map_overlays[i].setMap(null);
     }
   }
