@@ -19,7 +19,8 @@ var infowin = new google.maps.InfoWindow({
 var clickedWin = function(event) {
 	var meter = this.meter;
 	infowin.setContent(meter.NAME);
-    infowin.open(map, marker);
+	infowin.setPosition(event.latLng);
+    infowin.open(this.getMap());
 }
 
 function loadLines (map)
