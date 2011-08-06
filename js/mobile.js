@@ -85,7 +85,8 @@ function loadLines (map)
 				      strokeColor: color,
 				      strokeOpacity: 1.0,
 				      strokeWeight: 7.0,
-					  map:map
+					  map:map,
+					  draggable:
 				});
 				
 				google.maps.event.addListener(line, 'click', clickedWin);
@@ -184,6 +185,7 @@ Ext.setup({
                 zoom : 12,
                 mapTypeId : google.maps.MapTypeId.ROADMAP,
                 navigationControl: true,
+				draggable: true,
                 navigationControlOptions: {
                         style: google.maps.NavigationControlStyle.DEFAULT
                     }
