@@ -1,3 +1,39 @@
+var overlays = [];
+
+function clearOverlays() {
+  if (overlays) {
+	var i=0;
+    for (i in overlays) {
+      overlays[i].setMap(null);
+    }
+  }
+  overlays.length=0;
+}
+
+
+function addLine (lat1,lon1,lat2,lon2,meter,map) {
+	var lineCords = [
+	        new google.maps.LatLng(lat1, lon1),
+	        new google.maps.LatLng(lat2, lon2)
+	];
+	var line = new google.maps.Polyline({
+	      path: lineCords,
+	      strokeColor: "#FF0000",
+	      strokeOpacity: 1.0,
+	      strokeWeight: 2,
+		  map:map
+	});
+	
+	google.maps.event.addListener(line, 'click', function() {
+		var infowin = new google.maps.InfoWindow({
+            content: meter.name
+        })
+        infowin.open(map, line);
+    });
+	overlays.push(line);
+}
+
+
 Ext.setup({
     tabletStartupScreen: '/img/tablet_startup.png',
     phoneStartupScreen: '/img/phone_startup.png',
@@ -5,39 +41,8 @@ Ext.setup({
     glossOnIcon: false,
     onReady: function() {
 		
-		var overlays = [];
-		
-		var clearOverlays = function () {
-		  if (overlays) {
-			var i=0;
-		    for (i in overlays) {
-		      overlays[i].setMap(null);
-		    }
-		  }
-		  overlays = [];
-		}
-		
-		var addLine = function(lat1,lon1,lat2,lon2,meter,map) {
-			var lineCords = [
-			        new google.maps.LatLng(lat1, lon1),
-			        new google.maps.LatLng(lat2, lon2)
-			];
-			var line = new google.maps.Polyline({
-			      path: lineCords,
-			      strokeColor: "#FF0000",
-			      strokeOpacity: 1.0,
-			      strokeWeight: 2,
-				  map:map
-			});
-			
-			google.maps.event.addListener(line, 'click', function() {
-				var infowin = new google.maps.InfoWindow({
-	                content: meter.name
-	            })
-                infowin.open(map, line);
-            });
-			overlays.push(line);
-		}
+
+
 		
         // The following is accomplished with the Google Map API
         var position = new google.maps.LatLng(37.44885,-122.158592),  //Sencha HQ
@@ -104,9 +109,9 @@ Ext.setup({
                     ]
                 }]
                 });
-
+		
         mapdemo = new Ext.Map({
-
+			
             mapOptions : {
                 center : new google.maps.LatLng(37.778734661, -122.4318517401),  //nearby San Fran
                 zoom : 12,
@@ -146,7 +151,7 @@ Ext.setup({
 				},
 				
                 maprender : function(comp, map){
-                    var marker = new google.maps.Marker({
+                    /*var marker = new google.maps.Marker({
                                      position: position,
                                      title : 'Sencha HQ',
                                      map: map
@@ -156,7 +161,7 @@ Ext.setup({
                                      infowindow.open(map, marker);
                                 });
 					overlays.push(marker);
-                    setTimeout( function(){ map.panTo (position); } , 1000);
+                    setTimeout( function(){ map.panTo (position); } , 1000);*/
                 }
 
             }
