@@ -18,7 +18,11 @@ var infowin = new google.maps.InfoWindow({
 
 var clickedWin = function(event) {
 	var meter = this.meter;
-	infowin.setContent(meter.NAME);
+	var text = meter.NAME;
+	text += "<br/> Open meters: " + (parseInt(meter.OPER,10) - parseInt(meter.OCC,10));
+	text += "<br/> Rate: $" + meter.RATE;
+	
+	infowin.setContent(text);
 	infowin.setPosition(event.latLng);
     infowin.open(this.getMap());
 }
@@ -80,7 +84,7 @@ function loadLines (map)
 				      path: lineCords,
 				      strokeColor: color,
 				      strokeOpacity: 1.0,
-				      strokeWeight: 2,
+				      strokeWeight: 4,
 					  map:map
 				});
 				
