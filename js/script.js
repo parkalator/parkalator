@@ -1,6 +1,6 @@
 function y2lat(a) { return 180/Math.PI * (2 * Math.atan(Math.exp(a*Math.PI/180)) - Math.PI/2); }
 function lat2y(a) { return 180/Math.PI * Math.log(Math.tan(Math.PI/4+a*(Math.PI/180)/2)); }
-
+var regions = null;
 $(function(){
     
     var mapOptions = { 
@@ -22,7 +22,7 @@ $(function(){
 			{layers: 'openstreetmap', format: 'image/png', isBaseLayer: true, rendererOptions: {yOrdering: true}} 
     );
     
-    var regions = new OpenLayers.Layer.Vector("Regions", {
+    /*regions = new OpenLayers.Layer.Vector("Regions", {
         strategies: [new OpenLayers.Strategy.BBOX()],
         projection:  new OpenLayers.Projection("EPSG:2227"),
         protocol: new OpenLayers.Protocol.WFS({
@@ -33,7 +33,19 @@ $(function(){
             srsName: "EPSG:2227",
             featurePrefix: "parkalator"
         })
-    });
+    });*/
+
+    var colors = [
+	"#fd911c",
+	"#fb901a",
+	"#f98d18",
+	"#f78b16",
+	"#f58914"];
+
+    var randColor = function() {
+	console.log("randColor");
+	return colors[Math.floor ( Math.random() * colors.length )];
+    }	
 
     regions = new OpenLayers.Layer.Vector("Parking Meters", {
         strategies: [new OpenLayers.Strategy.BBOX()],
@@ -43,9 +55,18 @@ $(function(){
             featureType: "planning_neighborhoods",
             featureNS: "http://parkalator.com/parkws",
             srsName: "EPSG:900913"
-        })
+        }),
+    
     });
     
+    for(r in regions.features) {
+	f = regions.features[r];
+	f.style = OpenLayers.Style({
+		'fillColor': randColor()
+	});
+	console.log('foo');			
+    }	
+ 
     avail_pkg = new OpenLayers.Layer.Markers("Available Parking");
     
     map.addLayers([osm, regions, avail_pkg]);
@@ -55,8 +76,9 @@ $(function(){
         moveend: function(e) {
 	    // fetch data for this region
             if(map.zoom >= 15) {
-		
+		/*
 		var center = map.center;
+		
 		center.transform(
 		    new OpenLayers.Projection("EPSG:900913"), 
 		    new OpenLayers.Projection("EPSG:4326")
@@ -77,9 +99,14 @@ $(function(){
 			      avail_pkg.addMarker(bbox);
 			  } 
 		      })
-		
+		*/
 		// time to show the meters
-		meters = new OpenLayers.Layer.Vector("Parking Meters", {
+		meters = new OpenLayers.Layer.WMS(
+                    "SFMTA_meters_0210", "http://parkalator.com/geoserver/parkalator/wms",
+                    {layers: 'SFMTA_meters_0210', transparent: 'true'}
+                );
+                /*
+                meters = new OpenLayers.Layer.Vector("Parking Meters", {
 		    strategies: [new OpenLayers.Strategy.BBOX()],
 		    protocol: new OpenLayers.Protocol.WFS({
 			version: "1.1.0",
@@ -88,7 +115,7 @@ $(function(){
 			featureNS: "http://parkalator.com/parkws",
 			srsName: "EPSG:900913"
 		    })
-		});
+		});*/
 		
 		map.addLayers([meters]);
 		
@@ -131,9 +158,9 @@ $(function(){
 	}
     });
     
-    smoothie.addTimeSeries(dataSetMean, { strokeStyle: 'rgba(255, 0, 0, 1)', fillStyle: 'rgba(255, 0, 0, 0.2)', lineWidth: 1 });
-    smoothie.addTimeSeries(dataSetPaidMean, { strokeStyle: 'rgba(0, 255, 0, 1)', fillStyle: 'rgba(0, 255, 0, 0.2)', lineWidth: 1 });
-    smoothie.addTimeSeries(dataSetMaxRate, { strokeStyle: 'rgba(0, 0, 255, 1)', fillStyle: 'rgba(0, 0, 255, 0.2)', lineWidth: 1 });
+    smoothie.addTimeSeries(dataSetMean, { strokeStyle: 'rgba(120, 185, 193, 1)', fillStyle: 'rgba(255, 185, 193, 0.2)', lineWidth: 1 });
+    smoothie.addTimeSeries(dataSetPaidMean, { strokeStyle: 'rgba(120, 185, 84, 1)', fillStyle: 'rgba(120, 185, 84, 0.2)', lineWidth: 1 });
+    //smoothie.addTimeSeries(dataSetMaxRate, { strokeStyle: 'rgba(0, 0, 255, 1)', fillStyle: 'rgba(0, 0, 255, 0.2)', lineWidth: 1 });
     
     smoothie.streamTo(document.getElementById('chart'), 1000);
     
@@ -199,7 +226,7 @@ $(function(){
 	    }	
 	}
 	if ("freeMeters" in obj) {
-		$("#info-paidmeters").html("Paid: " + obj.paidMeters + " - Free: " + obj.freeMeters);
+		$("#info-paidmeters").html("<span style='display:block;float:left;width:30px' class='m10r'>" + obj.freeMeters + "</span>" + obj.paidMeters);
 	}
 	if ("priceAverage" in obj) {
 	    dataSetMean.append(now, updateStat(obj['priceAverage'], "#chart-mean"));
@@ -208,7 +235,7 @@ $(function(){
 	    dataSetPaidMean.append(now, updateStat(obj['pricePaidAverage'], "#chart-paidMean"));
 	}
 	if ("maxRate" in obj) {
-	    dataSetMaxRate.append(now, updateStat(obj['maxRate'], "#chart-paidMaxRate"));
+	    //dataSetMaxRate.append(now, updateStat(obj['maxRate'], "#chart-paidMaxRate"));
 	}
     });
 
