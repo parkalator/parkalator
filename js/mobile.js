@@ -11,8 +11,15 @@ function clearOverlays() {
 }
 
 
-function addLine (lat1,lon1,lat2,lon2,meter,map) {
 
+var infowin = new google.maps.InfoWindow({
+});
+
+
+var clickedWin = function(event) {
+	var meter = this.meter;
+	infowin.setContent(meter.NAME);
+    infowin.open(map, marker);
 }
 
 function loadLines (map)
@@ -61,13 +68,14 @@ function loadLines (map)
 				}
 				
 				
-				var marker = new google.maps.Marker({
+				/*var marker = new google.maps.Marker({
 				      position: center, 
 				      map: map, 
 				      title: meter.NAME
-				});
+				});*/
 				
 				var line = new google.maps.Polyline({
+					  meter: meter,
 				      path: lineCords,
 				      strokeColor: color,
 				      strokeOpacity: 1.0,
@@ -75,13 +83,8 @@ function loadLines (map)
 					  map:map
 				});
 				
-				google.maps.event.addListener(marker, 'click', function() {
-					var infowin = new google.maps.InfoWindow({
-			            content: meter.NAME
-			        })
-			        infowin.open(map, marker);
-			    });
-				map_overlays.push(marker);
+				google.maps.event.addListener(line, 'click', clickedWin);
+				//map_overlays.push(marker);
 				map_overlays.push(line);
 			}
 		}
