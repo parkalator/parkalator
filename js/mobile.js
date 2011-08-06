@@ -38,9 +38,26 @@ function loadLines (map)
 				        new google.maps.LatLng(meter.LOCBEG.lat, meter.LOCBEG.lng),
 				        new google.maps.LatLng(meter.LOCEND.lat, meter.LOCEND.lng)
 				];
+				
+				var rate = parseFloat(meter.rate);
+				var color = "#00FF00";
+				
+				if (rate > 3)
+				{
+					color = "#FF0000";
+				}
+				else if (rate > 2) {
+					color = "#FFFF00";
+				}
+				else if (rate > 1) {
+					color = "#BCE954";
+				}
+				else if (rate > 0) {
+					color = "#F87431";
+				}
 				var line = new google.maps.Polyline({
 				      path: lineCords,
-				      strokeColor: "#FF0000",
+				      strokeColor: color,
 				      strokeOpacity: 1.0,
 				      strokeWeight: 2,
 					  map:map
