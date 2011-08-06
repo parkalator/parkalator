@@ -58,14 +58,14 @@ function loadLines (map)
 				var rate = parseFloat(meter.RATE);
 				var color = "#00FF00";
 				
-				if (rate > 3)
+				if (rate >= 3)
 				{
 					color = "#FF0000";
 				}
-				else if (rate > 2) {
+				else if (rate >= 2) {
 					color = "#FFFF00";
 				}
-				else if (rate > 1) {
+				else if (rate >= 1) {
 					color = "#BCE954";
 				}
 				else if (rate > 0) {
@@ -84,7 +84,7 @@ function loadLines (map)
 				      path: lineCords,
 				      strokeColor: color,
 				      strokeOpacity: 1.0,
-				      strokeWeight: 4,
+				      strokeWeight: 7.0,
 					  map:map
 				});
 				
