@@ -86,7 +86,7 @@ function loadLines (map)
 				      strokeOpacity: 1.0,
 				      strokeWeight: 7.0,
 					  map:map,
-					  draggable:
+					  draggable: true
 				});
 				
 				google.maps.event.addListener(line, 'click', clickedWin);
