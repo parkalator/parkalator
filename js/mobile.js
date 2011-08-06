@@ -64,7 +64,7 @@ function loadLines (map)
 				var marker = new google.maps.Marker({
 				      position: center, 
 				      map: map, 
-				      title:meter.NAME
+				      title: meter.NAME
 				});
 				
 				var line = new google.maps.Polyline({
@@ -211,7 +211,8 @@ Ext.setup({
 				
                 maprender : function(comp, map){
 					//loadLines(map);
-					setInterval(function(){loadLines(map);},5000);
+					loadLines(map);
+					//setInterval(function(){},5000);
 					
                     /*var marker = new google.maps.Marker({
                                      position: position,
