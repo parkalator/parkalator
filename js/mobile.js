@@ -89,7 +89,7 @@ function loadLines (map)
 					  draggable: true
 				});
 				
-				google.maps.event.addListener(line, 'click', clickedWin);
+				google.maps.event.addListener(line, 'mousedown', clickedWin);
 				//map_overlays.push(marker);
 				map_overlays.push(line);
 			}
