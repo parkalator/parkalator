@@ -39,7 +39,7 @@ function loadLines (map)
 				        new google.maps.LatLng(meter.LOCEND.lat, meter.LOCEND.lng)
 				];
 				
-				var rate = parseFloat(meter.rate);
+				var rate = parseFloat(meter.RATE);
 				var color = "#00FF00";
 				
 				if (rate > 3)
