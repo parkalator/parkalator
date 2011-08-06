@@ -4,7 +4,40 @@ Ext.setup({
     icon: '/img/icon.png',
     glossOnIcon: false,
     onReady: function() {
-
+		
+		var overlays = [];
+		
+		var clearOverlays = function () {
+		  if (overlays) {
+		    for (i in overlays) {
+		      overlays[i].setMap(null);
+		    }
+		  }
+		  overlays = [];
+		}
+		
+		var addLine = function(lat1,lon1,lat2,lon2,meter,map) {
+			var lineCords = [
+			        new google.maps.LatLng(lat1, lon1),
+			        new google.maps.LatLng(lat2, lon2)
+			];
+			var line = new google.maps.Polyline({
+			      path: lineCords,
+			      strokeColor: "#FF0000",
+			      strokeOpacity: 1.0,
+			      strokeWeight: 2,
+				  map:map
+			});
+			
+			google.maps.event.addListener(line, 'click', function() {
+				var infowin = new google.maps.InfoWindow({
+	                content: meter.name
+	            })
+                infowin.open(map, line);
+            });
+			overlays.push(line);
+		}
+		
         // The following is accomplished with the Google Map API
         var position = new google.maps.LatLng(37.44885,-122.158592),  //Sencha HQ
 
@@ -74,7 +107,7 @@ Ext.setup({
         mapdemo = new Ext.Map({
 
             mapOptions : {
-                center : new google.maps.LatLng(37.381592, -122.135672),  //nearby San Fran
+                center : new google.maps.LatLng(37.778734661, -122.4318517401),  //nearby San Fran
                 zoom : 12,
                 mapTypeId : google.maps.MapTypeId.ROADMAP,
                 navigationControl: true,
@@ -82,7 +115,7 @@ Ext.setup({
                         style: google.maps.NavigationControlStyle.DEFAULT
                     }
             },
-
+			
             plugins : [
                 new Ext.plugin.GMap.Tracker({
                         trackSuspended : true,   //suspend tracking initially
@@ -98,6 +131,19 @@ Ext.setup({
             ],
 
             listeners : {
+				zoomchange : function (comp, map, zoom) {
+					
+				},
+				centerchange : function(comp, map, center) {
+					clearOverlays();
+					var marker = new google.maps.Marker({
+                                     position: center,
+                                     title : 'TEST',
+                                     map: map
+                                });
+					overlays.push(marker);
+				},
+				
                 maprender : function(comp, map){
                     var marker = new google.maps.Marker({
                                      position: position,
@@ -108,13 +154,15 @@ Ext.setup({
                                 google.maps.event.addListener(marker, 'click', function() {
                                      infowindow.open(map, marker);
                                 });
-
+					overlays.push(marker);
                     setTimeout( function(){ map.panTo (position); } , 1000);
                 }
 
             }
         });
-
+		
+		
+		
         new Ext.Panel({
             fullscreen: true,
             dockedItems: [toolbar],
