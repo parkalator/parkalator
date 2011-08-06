@@ -1,5 +1,5 @@
 var map_overlays = [];
-
+var ajaxRequest = null;
 function clearOverlays() {
   if (map_overlays.length > 0) {
 	var i = 0;
@@ -12,25 +12,52 @@ function clearOverlays() {
 
 
 function addLine (lat1,lon1,lat2,lon2,meter,map) {
-	var lineCords = [
-	        new google.maps.LatLng(lat1, lon1),
-	        new google.maps.LatLng(lat2, lon2)
-	];
-	var line = new google.maps.Polyline({
-	      path: lineCords,
-	      strokeColor: "#FF0000",
-	      strokeOpacity: 1.0,
-	      strokeWeight: 2,
-		  map:map
-	});
+
+}
+
+function loadLines (map)
+{
+
+	if (ajaxRequest)
+	{
+		ajaxRequest.abort();
+		ajaxRequest = null;
+	}
+	ajaxRequest = $.ajax({
+	  url: '/api/parking_meters?lat=37.778734661&lng=-122.4318517401&radius=0.01',
+	  success: function(data) {
+		ajaxRequest = null;
+		clearOverlays();
+		var meters = data.meters;
+		if (meters){
+			var i = 0;
+			for (i=0;i<meters.length;i++)
+			{
+				var meter = meters[i];
+				var lineCords = [
+				        new google.maps.LatLng(meter.LOCBEG.lat, meter.LOCBEG.lng),
+				        new google.maps.LatLng(meter.LOCEND.lat, meter.LOCEND.lng)
+				];
+				var line = new google.maps.Polyline({
+				      path: lineCords,
+				      strokeColor: "#FF0000",
+				      strokeOpacity: 1.0,
+				      strokeWeight: 2,
+					  map:map
+				});
+				
+				google.maps.event.addListener(line, 'click', function() {
+					var infowin = new google.maps.InfoWindow({
+			            content: meter.NAME
+			        })
+			        infowin.open(map, line);
+			    });
+				map_overlays.push(line);
+			}
+		}
 	
-	google.maps.event.addListener(line, 'click', function() {
-		var infowin = new google.maps.InfoWindow({
-            content: meter.name
-        })
-        infowin.open(map, line);
-    });
-	map_overlays.push(line);
+	  }
+	});
 }
 
 
@@ -110,6 +137,20 @@ Ext.setup({
                 }]
                 });
 		
+		
+
+		mapAjax =  new Ext.Ajax.request({
+				    url: '/api/parking_meters?lat=37.778734661&lng=-122.4318517401&radius=0.01',
+				    params: {
+				        paramName: 'paramValue'
+				    },
+				    timeout: 3000,
+				    method: 'GET',
+				    success: function(xhr) {
+				        alert('Response is "' + xhr.responseText + '"');
+				    }
+				});
+		
         mapdemo = new Ext.Map({
 			
             mapOptions : {
@@ -135,22 +176,25 @@ Ext.setup({
                 }),
                 new Ext.plugin.GMap.Traffic({ hidden : true })
             ],
-
+			
             listeners : {
 				zoomchange : function (comp, map, zoom) {
 					
 				},
 				centerchange : function(comp, map, center) {
-					clearOverlays();
+					/*clearOverlays();
 					var marker = new google.maps.Marker({
                                      position: center,
                                      title : 'TEST',
                                      map: map
                                 });
-					map_overlays.push(marker);
+					map_overlays.push(marker);*/
 				},
 				
                 maprender : function(comp, map){
+					//loadLines(map);
+					setInterval(function(){loadLines(map);},5000);
+					
                     /*var marker = new google.maps.Marker({
                                      position: position,
                                      title : 'Sencha HQ',
