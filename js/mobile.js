@@ -55,6 +55,7 @@ function loadLines (map)
 				else if (rate > 0) {
 					color = "#F87431";
 				}
+				
 				var line = new google.maps.Polyline({
 				      path: lineCords,
 				      strokeColor: color,
