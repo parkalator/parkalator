@@ -84,17 +84,17 @@ function loadLines (map,toolbar)
 					color = "#0000FF";
 				}
 				
-				totalCount += (parseInt(meter.OPER,10);
-				occCount += (parseInt(meter.OCC,10);
+				totalCount += parseInt(meter.OPER,10);
+				occCount += parseInt(meter.OCC,10);
 				emptyCount += (parseInt(meter.OPER,10) - parseInt(meter.OCC,10));
 				
 				if (rate==0)
 				{
-					freeCount += (parseInt(meter.OPER,10);
+					freeCount += parseInt(meter.OPER,10);
 				}
 				else
 				{
-					paidCount += (parseInt(meter.OPER,10);
+					paidCount += parseInt(meter.OPER,10);
 				}
 				
 				/*var marker = new google.maps.Marker({
