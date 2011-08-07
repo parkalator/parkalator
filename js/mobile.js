@@ -118,7 +118,7 @@ function loadLines (map,toolbar)
 				//map_overlays.push(marker);
 				map_overlays.push(line);
 			}
-			toolbar.setTitle("Occupied: " + occCount + " , Free: " + totalCount + " , empty:" + emptyCount);
+			toolbar.setTitle("Occupied: " + occCount + " - Empty: " + emptyCount + " - Total: " + totalCount);
 		}
 		
 	
