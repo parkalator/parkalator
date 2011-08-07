@@ -78,7 +78,7 @@ function loadLines (map)
 					color = "#F87431";
 				}
 				
-				if ((parseInt(meter.OPER,10) - parseInt(meter.OCC,10))=0)
+				if ((parseInt(meter.OPER,10) - parseInt(meter.OCC,10))==0)
 				{
 					color = "#0000FF";
 				}
