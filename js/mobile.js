@@ -119,11 +119,14 @@ function loadLines (map,toolbar)
 				map_overlays.push(line);
 			}
 			toolbar.setTitle("Occupied: " + occCount + " - Empty: " + emptyCount + " - Total: " + totalCount);
+			
 		}
-		
+		setTimeout(function(){loadLines(map,toolbar);},3000);
 	
 	  }
 	});
+	
+	
 }
 
 
@@ -249,7 +252,7 @@ Ext.setup({
                 maprender : function(comp, map){
 					//loadLines(map);
 					loadLines(map,toolbar);
-					setInterval(function(){loadLines(map,toolbar);},10000);
+				
 					
                     /*var marker = new google.maps.Marker({
                                      position: position,
