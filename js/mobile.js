@@ -33,7 +33,7 @@ var clickedWin = function(event) {
 }
 
 
-function loadLines (map)
+function loadLines (map,toolbar)
 {
 
 	if (ajaxRequest)
@@ -46,6 +46,7 @@ function loadLines (map)
 	  success: function(data) {
 		ajaxRequest = null;
 		clearOverlays();
+		var totalCount, emptyCount, occCount, freeCount, paidCount;
 		var meters = data.meters;
 		if (meters){
 			var i = 0;
@@ -83,6 +84,18 @@ function loadLines (map)
 					color = "#0000FF";
 				}
 				
+				totalCount += (parseInt(meter.OPER,10);
+				occCount += (parseInt(meter.OCC,10);
+				emptyCount += (parseInt(meter.OPER,10) - parseInt(meter.OCC,10));
+				
+				if (rate==0)
+				{
+					freeCount += (parseInt(meter.OPER,10);
+				}
+				else
+				{
+					paidCount += (parseInt(meter.OPER,10);
+				}
 				
 				/*var marker = new google.maps.Marker({
 				      position: center, 
@@ -100,11 +113,13 @@ function loadLines (map)
 					  //draggable: true
 				});
 				
+				
 				google.maps.event.addListener(line, 'click', clickedWin);
 				//map_overlays.push(marker);
 				map_overlays.push(line);
 			}
 		}
+		toolbar.setTitle("Occupied: " + occCount + " , Free: " + totalCount + " , empty:" + emptyCount);
 	
 	  }
 	});
@@ -232,8 +247,8 @@ Ext.setup({
 				
                 maprender : function(comp, map){
 					//loadLines(map);
-					loadLines(map);
-					setInterval(function(){loadLines(map);},10000);
+					loadLines(map,toolbar);
+					setInterval(function(){loadLines(map,toolbar);},10000);
 					
                     /*var marker = new google.maps.Marker({
                                      position: position,
