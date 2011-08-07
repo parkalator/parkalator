@@ -1,6 +1,6 @@
 Ext.gesture.Manager.onMouseEvent = function(e) {
 if (!e.isSimulated)
-e.stopPropagation();
+	e.stopPropagation();
 }
 
 var map_overlays = [];
@@ -78,6 +78,11 @@ function loadLines (map)
 					color = "#F87431";
 				}
 				
+				if ((parseInt(meter.OPER,10) - parseInt(meter.OCC,10))=0)
+				{
+					color = "#0000FF";
+				}
+				
 				
 				/*var marker = new google.maps.Marker({
 				      position: center, 
@@ -90,7 +95,7 @@ function loadLines (map)
 				      path: lineCords,
 				      strokeColor: color,
 				      strokeOpacity: 1.0,
-				      strokeWeight: 7.0,
+				      strokeWeight: 5.0,
 					  map:map
 					  //draggable: true
 				});
@@ -228,7 +233,7 @@ Ext.setup({
                 maprender : function(comp, map){
 					//loadLines(map);
 					loadLines(map);
-					//setInterval(function(){},5000);
+					setInterval(function(){loadLines(map);},10000);
 					
                     /*var marker = new google.maps.Marker({
                                      position: position,
