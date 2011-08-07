@@ -26,6 +26,8 @@ var clickedWin = function(event) {
 	var text = meter.NAME;
 	text += "<br/> Open meters: " + (parseInt(meter.OPER,10) - parseInt(meter.OCC,10));
 	text += "<br/> Rate: $" + meter.RATE;
+	text += "<br/> This rate ends at: " + meter.END;
+	text += "<br/> Alert me when: <button type='button'>Price changes</button> <button type='button'>Parking slot opens</button>";
 	
 	infowin.setContent(text);
 	infowin.setPosition(event.latLng);
