@@ -207,6 +207,14 @@ Ext.setup({
                     ]
                 }]
                 });
+			var bottomData = new Ext.Toolbar({	
+				dock: 'bottom',
+                xtype: 'toolbar',
+                ui : 'light',
+				defaults: {
+                    iconMask: true
+                }
+			});
 		
 	
 		
@@ -253,7 +261,7 @@ Ext.setup({
 				
                 maprender : function(comp, map){
 					//loadLines(map);
-					loadLines(map,toolbar);
+					loadLines(map,bottomData);
 				
 					
                     /*var marker = new google.maps.Marker({
@@ -276,7 +284,7 @@ Ext.setup({
 		
         new Ext.Panel({
             fullscreen: true,
-            dockedItems: [toolbar],
+            dockedItems: [toolbar,bottomData],
             items: [mapdemo]
         });
 
