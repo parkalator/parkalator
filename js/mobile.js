@@ -46,7 +46,7 @@ function loadLines (map,toolbar)
 	  success: function(data) {
 		ajaxRequest = null;
 		clearOverlays();
-		var totalCount, emptyCount, occCount, freeCount, paidCount;
+		var totalCount =0, emptyCount=0, occCount=0, freeCount=0, paidCount=0;
 		var meters = data.meters;
 		if (meters){
 			var i = 0;
@@ -118,8 +118,9 @@ function loadLines (map,toolbar)
 				//map_overlays.push(marker);
 				map_overlays.push(line);
 			}
+			toolbar.setTitle("Occupied: " + occCount + " , Free: " + totalCount + " , empty:" + emptyCount);
 		}
-		toolbar.setTitle("Occupied: " + occCount + " , Free: " + totalCount + " , empty:" + emptyCount);
+		
 	
 	  }
 	});
