@@ -120,7 +120,7 @@ function loadLines (map,toolbar)
 				//map_overlays.push(marker);
 				map_overlays.push(line);
 			}
-			toolbar.setTitle("F/E/T: " + occCount + "/" + emptyCount + "/" + totalCount);
+			toolbar.setTitle("Full/Empty/Total:&nbsp;" + occCount + "/" + emptyCount + "/" + totalCount);
 			
 		}
 		setTimeout(function(){loadLines(map,toolbar);},3000);
